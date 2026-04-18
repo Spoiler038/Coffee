@@ -1,51 +1,50 @@
 {
   "name": "Тучка — Складской учет кофейни",
   "short_name": "Тучка",
-  "description": "Управление складом, продажами и инвентаризацией кофейни Тучка",
-  "start_url": "/",
+  "description": "Управление складом кофейни Тучка",
+  "start_url": "/Coffee/",
+  "scope": "/Coffee/",
   "display": "standalone",
   "theme_color": "#7B8CDE",
   "background_color": "#FFFFFF",
-  "orientation": "portrait",
   "icons": [
     {
-      "src": "icons/icon-72.png",
+      "src": "/Coffee/icons/icon-72.png",
       "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
-      "src": "icons/icon-96.png",
+      "src": "/Coffee/icons/icon-96.png",
       "sizes": "96x96",
       "type": "image/png"
     },
     {
-      "src": "icons/icon-128.png",
+      "src": "/Coffee/icons/icon-128.png",
       "sizes": "128x128",
       "type": "image/png"
     },
     {
-      "src": "icons/icon-144.png",
+      "src": "/Coffee/icons/icon-144.png",
       "sizes": "144x144",
       "type": "image/png"
     },
     {
-      "src": "icons/icon-152.png",
+      "src": "/Coffee/icons/icon-152.png",
       "sizes": "152x152",
       "type": "image/png"
     },
     {
-      "src": "icons/icon-192.png",
+      "src": "/Coffee/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icons/icon-384.png",
+      "src": "/Coffee/icons/icon-384.png",
       "sizes": "384x384",
       "type": "image/png"
     },
     {
-      "src": "icons/icon-512.png",
+      "src": "/Coffee/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
