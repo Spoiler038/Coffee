@@ -1,11 +1,8 @@
-const CACHE_NAME = 'coffeestock-v1.0.0';
+const CACHE_NAME = 'tuchka-v1';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/manifest.json',
-  'https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css',
-  'https://cdn.jsdelivr.net/npm/sweetalert2@11'
+  '/manifest.json'
 ];
 
 self.addEventListener('install', event => {
@@ -19,17 +16,7 @@ self.addEventListener('install', event => {
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
-      .then(response => {
-        if (response) return response;
-        return fetch(event.request)
-          .then(response => {
-            if (!response || response.status !== 200 || response.type !== 'basic') return response;
-            const responseToCache = response.clone();
-            caches.open(CACHE_NAME)
-              .then(cache => cache.put(event.request, responseToCache));
-            return response;
-          });
-      })
+      .then(response => response || fetch(event.request))
   );
 });
 
