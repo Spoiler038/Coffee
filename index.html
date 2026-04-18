@@ -790,7 +790,7 @@ if ('serviceWorker' in navigator) {
             onMounted(() => { 
                 refreshAll();
                 if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered', reg)).catch(err => console.log('SW failed', err));
+                    navigator.serviceWorker.register('/Coffee/sw.js').then(reg => console.log('SW registered', reg)).catch(err => console.log('SW failed', err));
                 }
                 window.addEventListener('online', () => { offline.value=false; refreshAll(); });
                 window.addEventListener('offline', () => { offline.value=true; });
