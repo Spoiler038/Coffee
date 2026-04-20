@@ -37,7 +37,6 @@
             padding-bottom: 80px;
         }
 
-        /* Фиксированная шапка */
         .app-header {
             position: fixed;
             top: 0;
@@ -74,7 +73,6 @@
             cursor: pointer;
         }
 
-        /* Bottom navigation с горизонтальным скроллом */
         .bottom-nav-wrapper {
             position: fixed;
             bottom: 0;
@@ -113,9 +111,7 @@
             border-radius: 30px;
             white-space: nowrap;
         }
-        .nav-item i {
-            font-size: 20px;
-        }
+        .nav-item i { font-size: 20px; }
         .nav-item.active {
             color: #7B8CDE;
             background: #F0F2FF;
@@ -140,10 +136,7 @@
             cursor: pointer;
             transition: 0.15s;
         }
-        .btn-primary {
-            background: #7B8CDE;
-            color: white;
-        }
+        .btn-primary { background: #7B8CDE; color: white; }
         .btn-primary:hover { background: #6A7BCC; }
         .btn-danger { background: #EF4444; color: white; }
         .btn-success { background: #10B981; color: white; }
@@ -221,9 +214,7 @@
             background: #F59E0B;
             animation: pulse 1s infinite;
         }
-        .sync-btn.success {
-            background: #10B981;
-        }
+        .sync-btn.success { background: #10B981; }
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.1); }
@@ -240,7 +231,6 @@
             font-size: 10px;
             z-index: 100;
         }
-        /* Toggle switch для пользователей */
         .switch {
             position: relative;
             display: inline-block;
@@ -271,7 +261,6 @@
         input:checked + .slider { background-color: #7B8CDE; }
         input:checked + .slider:before { transform: translateX(24px); }
         
-        /* Индикатор синхронизации в шапке */
         .sync-status {
             display: flex;
             align-items: center;
@@ -282,14 +271,52 @@
             padding: 4px 10px;
             border-radius: 20px;
         }
-        .sync-status i {
-            font-size: 10px;
+        .sync-status.syncing { color: #F59E0B; }
+        .sync-status.success { color: #10B981; }
+        
+        /* Стили для модальных окон SweetAlert2 — убираем горизонтальный скролл */
+        .swal2-popup {
+            max-width: 95vw !important;
+            width: auto !important;
+            padding: 1rem !important;
         }
-        .sync-status.syncing {
-            color: #F59E0B;
+        .swal2-html-container {
+            overflow-x: hidden !important;
+            max-height: 70vh;
+            overflow-y: auto;
         }
-        .sync-status.success {
-            color: #10B981;
+        .swal2-input, .swal2-select {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+            margin: 8px 0 !important;
+        }
+        
+        /* Стили для аналитики продаж */
+        .sales-category-group {
+            margin-bottom: 16px;
+            border-left: 3px solid #7B8CDE;
+            padding-left: 12px;
+        }
+        .sales-category-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1E293B;
+            margin-bottom: 8px;
+        }
+        .sales-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px dashed #EDF2F7;
+        }
+        .sales-item-name {
+            font-size: 13px;
+        }
+        .sales-item-quantity {
+            font-weight: 600;
+            color: #7B8CDE;
         }
     </style>
 </head>
@@ -311,7 +338,6 @@
     </div>
 
     <div class="container">
-        <!-- Экран входа -->
         <div v-if="!user" class="card" style="max-width: 480px; margin: 80px auto;">
             <h2 style="margin-bottom: 20px;">☕ Кофейня Тучка ☁️</h2>
             <input type="text" v-model="loginPhone" placeholder="Телефон (+7, 8 или 9...)" class="input" style="margin-bottom: 12px;">
@@ -320,7 +346,6 @@
             <p style="margin-top: 20px; font-size: 12px; text-align:center;">Демо: admin / +79991234567 (123) | barista / +79876543210 (123)</p>
         </div>
 
-        <!-- Основное приложение -->
         <div v-else>
             <!-- Склад -->
             <div v-show="activeTab === 'stock'">
@@ -334,9 +359,14 @@
                         <input type="text" v-model="searchStock" placeholder="Поиск..." class="input" style="width:200px; padding:10px;">
                     </div>
                     <div v-for="item in filteredStock" :key="item.id" class="inventory-row">
-                        <div><strong>{{ item.name }}</strong> <span class="badge">{{ item.category }}</span><br><small>{{ item.unit }} | 💰{{ item.cost }}₽ | 🏷️{{ item.sellPrice || item.cost }}₽</small></div>
+                        <div>
+                            <strong>{{ item.name }}</strong> 
+                            <span class="badge">{{ item.category }}</span>
+                            <br>
+                            <small>{{ item.unit }} | 💰 {{ formatNumber(item.cost) }}₽ | 🏷️ {{ formatNumber(item.sellPrice || item.cost) }}₽</small>
+                        </div>
                         <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                            <span style="font-weight:700;">{{ item.quantity }} {{ item.unit }}</span>
+                            <span style="font-weight:700;">{{ formatNumber(item.quantity) }} {{ item.unit }}</span>
                             <button v-if="user.role === 'admin'" @click="openItemModal(item)" class="btn" style="padding:5px 10px;"><i class="fas fa-edit"></i></button>
                             <button @click="openIncomeModal(item)" class="btn btn-primary" style="padding:5px 10px;"><i class="fas fa-truck"></i> Приход</button>
                             <button @click="openDamageModal(item)" class="btn btn-danger" style="padding:5px 10px;" v-if="user.role === 'admin'"><i class="fas fa-trash-alt"></i> Списание</button>
@@ -345,7 +375,7 @@
                 </div>
             </div>
 
-            <!-- Техкарты и продажи по рецептам -->
+            <!-- Техкарты -->
             <div v-show="activeTab === 'techcards'">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
                     <h3>📋 Техкарты</h3>
@@ -365,9 +395,9 @@
                     <ul style="margin-left: 20px; margin-top: 8px;">
                         <li v-for="ing in card.ingredients">{{ ing.itemName }}: {{ ing.qty }} {{ ing.unit }}</li>
                     </ul>
-                    <div><strong>Себестоимость: ≈ {{ calculateCardCost(card) }} ₽ | Продажа: {{ card.sellPrice || 0 }} ₽</strong></div>
+                    <div><strong>Себестоимость: ≈ {{ formatNumber(calculateCardCost(card)) }} ₽ | Продажа: {{ formatNumber(card.sellPrice || 0) }} ₽</strong></div>
                     <div v-if="card.sellPrice" :class="(card.sellPrice - calculateCardCost(card)) > 0 ? 'profit-positive' : 'profit-negative'">
-                        Прибыль: {{ (card.sellPrice - calculateCardCost(card)).toFixed(2) }} ₽
+                        Прибыль: {{ formatNumber(card.sellPrice - calculateCardCost(card)) }} ₽
                     </div>
                 </div>
             </div>
@@ -382,8 +412,8 @@
                     <div v-else>
                         <h4>Инвентаризация от {{ new Date(activeInventory.startedAt).toLocaleString() }}</h4>
                         <div v-for="item in stockItems" :key="item.id" class="inventory-row">
-                            <span>{{ item.name }} ({{ item.unit }}) — текущий: {{ item.quantity }}</span>
-                            <input type="number" v-model.number="inventoryCounts[item.id]" placeholder="Факт" class="input" style="width:120px;">
+                            <span>{{ item.name }} ({{ item.unit }}) — текущий: {{ formatNumber(item.quantity) }}</span>
+                            <input type="number" step="0.01" v-model.number="inventoryCounts[item.id]" placeholder="Факт" class="input" style="width:120px;">
                         </div>
                         <div style="margin-top:20px; display: flex; gap:12px;">
                             <button @click="completeInventory" class="btn btn-primary">Завершить</button>
@@ -409,12 +439,12 @@
                     </div>
                     <div v-for="log in filteredSupplies" :key="log.id" class="inventory-row">
                         <div><strong>{{ log.itemName }}</strong><br><small>{{ new Date(log.date).toLocaleString() }}</small></div>
-                        <div>+ {{ log.quantity }} {{ log.unit }} | {{ (log.quantity * log.costPerUnit).toFixed(2) }}₽</div>
+                        <div>+ {{ log.quantity }} {{ log.unit }} | {{ formatNumber(log.quantity * log.costPerUnit) }}₽</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Аналитика -->
+            <!-- Аналитика с детализацией по товарам -->
             <div v-show="activeTab === 'analytics'">
                 <h3>📈 Аналитика</h3>
                 <div class="card">
@@ -428,32 +458,48 @@
                         <button @click="setAnalyticsPeriod('month')" class="btn">Месяц</button>
                     </div>
                 </div>
+                
+                <!-- Финансовый отчет -->
                 <div class="card" v-if="profitReport">
-                    <h4>Финансовый отчет</h4>
+                    <h4>💰 Финансовый отчет</h4>
                     <div class="inventory-row">
                         <span>Выручка:</span>
-                        <span class="profit-positive">{{ profitReport.revenue.toFixed(2) }} ₽</span>
+                        <span class="profit-positive">{{ formatNumber(profitReport.revenue) }} ₽</span>
                     </div>
                     <div class="inventory-row">
                         <span>Себестоимость:</span>
-                        <span>{{ profitReport.cost.toFixed(2) }} ₽</span>
+                        <span>{{ formatNumber(profitReport.cost) }} ₽</span>
                     </div>
                     <div class="inventory-row">
                         <span>Валовая прибыль:</span>
-                        <span :class="profitReport.profit > 0 ? 'profit-positive' : 'profit-negative'">{{ profitReport.profit.toFixed(2) }} ₽</span>
+                        <span :class="profitReport.profit > 0 ? 'profit-positive' : 'profit-negative'">{{ formatNumber(profitReport.profit) }} ₽</span>
                     </div>
                     <div class="inventory-row">
                         <span>Списано (порча):</span>
-                        <span class="profit-negative">{{ profitReport.damageCost.toFixed(2) }} ₽</span>
+                        <span class="profit-negative">{{ formatNumber(profitReport.damageCost) }} ₽</span>
                     </div>
+                </div>
+                
+                <!-- Детализация продаж по категориям -->
+                <div class="card" v-if="salesByCategory.length">
+                    <h4>📊 Продажи за период</h4>
+                    <div v-for="category in salesByCategory" :key="category.name" class="sales-category-group">
+                        <div class="sales-category-title">{{ category.name }}:</div>
+                        <div v-for="item in category.items" :key="item.name" class="sales-item-row">
+                            <span class="sales-item-name">{{ item.name }}</span>
+                            <span class="sales-item-quantity">{{ formatNumber(item.quantity) }} {{ item.unit }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div v-else-if="analyticsGenerated && !salesByCategory.length" class="card">
+                    <p style="text-align:center; color:#64748B;">Нет продаж за выбранный период</p>
                 </div>
             </div>
 
-            <!-- Админка с управлением пользователями -->
+            <!-- Админка -->
             <div v-show="activeTab === 'settings' && user.role === 'admin'">
                 <h3>⚙️ Администрирование</h3>
                 
-                <!-- Управление пользователями -->
                 <div class="card">
                     <h4>👥 Пользователи</h4>
                     <button @click="openUserModal(null)" class="btn btn-primary" style="margin-bottom: 12px;">+ Добавить</button>
@@ -472,7 +518,6 @@
                     </div>
                 </div>
 
-                <!-- Управление категориями -->
                 <div class="card">
                     <h4>📂 Разделы товаров</h4>
                     <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
@@ -481,7 +526,6 @@
                     <div style="display:flex; gap:8px;"><input v-model="newCategory" placeholder="Новый раздел" class="input"><button @click="addCategory" class="btn btn-primary">Добавить</button></div>
                 </div>
 
-                <!-- Экспорт/Импорт -->
                 <div class="card">
                     <h4>💾 Резервное копирование</h4>
                     <button @click="exportData" class="btn"><i class="fas fa-download"></i> Экспорт JSON</button>
@@ -508,20 +552,24 @@
     const { createApp, ref, computed, onMounted } = Vue;
 
     // ============== НАСТРОЙКИ GITHUB ==============
-    // ВАЖНО: Замените на ваш токен GitHub
-    // Получить токен: https://github.com/settings/tokens
-    // Нужны права: repo
     const GITHUB_TOKEN = '__GITHUB_TOKEN_PLACEHOLDER__';
     const REPO_OWNER = 'spoiler038';
     const REPO_NAME = 'Coffee';
     const BRANCH = 'main';
     // ==============================================
 
-    // Состояние синхронизации
-    const syncState = ref('idle'); // idle, syncing, success, error
+    // Форматирование чисел (округляем до 1 знака)
+    function formatNumber(value) {
+        if (value === undefined || value === null) return '0';
+        const num = parseFloat(value);
+        if (isNaN(num)) return '0';
+        // Округляем до 1 десятичного знака
+        return Math.round(num * 10) / 10;
+    }
+
+    const syncState = ref('idle');
     let syncTimeout = null;
 
-    // Класс для работы с GitHub API
     class GitHubDB {
         constructor() {
             this.apiUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/data`;
@@ -538,11 +586,7 @@
                 const response = await fetch(`${this.apiUrl}/${filename}`, {
                     headers: this.headers
                 });
-                
-                if (response.status === 404) {
-                    return [];
-                }
-                
+                if (response.status === 404) return [];
                 const data = await response.json();
                 const content = atob(data.content);
                 return JSON.parse(content);
@@ -554,19 +598,16 @@
 
         async saveFile(filename, data, isSilent = false) {
             try {
-                // Получаем текущий файл для sha
                 let sha = null;
                 const getResponse = await fetch(`${this.apiUrl}/${filename}`, {
                     headers: this.headers
                 });
-                
                 if (getResponse.status === 200) {
                     const fileData = await getResponse.json();
                     sha = fileData.sha;
                 }
-                
                 const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
-                const response = await fetch(`${this.apiUrl}/${filename}`, {
+                await fetch(`${this.apiUrl}/${filename}`, {
                     method: 'PUT',
                     headers: {
                         ...this.headers,
@@ -579,15 +620,12 @@
                         branch: BRANCH
                     })
                 });
-                
                 if (!isSilent) {
                     updateSyncStatus('success');
                     setTimeout(() => {
                         if (syncState.value === 'success') syncState.value = 'idle';
                     }, 2000);
                 }
-                
-                return await response.json();
             } catch (error) {
                 console.error(`Ошибка сохранения ${filename}:`, error);
                 if (!isSilent) updateSyncStatus('error');
@@ -595,17 +633,13 @@
             }
         }
 
-        // Пакетное сохранение с задержкой
         scheduleSave(filename, data) {
             this.pendingWrites.set(filename, data);
-            
             if (this.writeTimeout) clearTimeout(this.writeTimeout);
-            
             this.writeTimeout = setTimeout(async () => {
                 updateSyncStatus('syncing');
                 const writes = Array.from(this.pendingWrites.entries());
                 this.pendingWrites.clear();
-                
                 try {
                     for (const [filename, data] of writes) {
                         await this.saveFile(filename, data, true);
@@ -623,12 +657,10 @@
 
     const db = new GitHubDB();
 
-    // Функции обновления статуса синхронизации
     function updateSyncStatus(status) {
         syncState.value = status;
     }
 
-    // Нормализация телефона
     function normalizePhone(phone) {
         let cleaned = phone.replace(/[^\d+]/g, '');
         if (cleaned.startsWith('+7')) cleaned = cleaned.slice(2);
@@ -663,6 +695,8 @@
             const analyticsStartDate = ref(new Date(Date.now() - 7*86400000).toISOString().slice(0,10));
             const analyticsEndDate = ref(new Date().toISOString().slice(0,10));
             const profitReport = ref(null);
+            const salesByCategory = ref([]);
+            const analyticsGenerated = ref(false);
             const offline = ref(!navigator.onLine);
 
             async function refreshAll() {
@@ -674,61 +708,32 @@
                     inventoryReports.value = await db.getFile('inventory.json');
                     damageHistory.value = await db.getFile('damage.json');
                     
-                    // Извлекаем категории из товаров
                     const cats = new Set();
                     stockItems.value.forEach(item => cats.add(item.category));
                     categories.value = [...cats];
                     
-                    // Загружаем пользователей (если есть файл)
                     const users = await db.getFile('users.json');
                     if (users.length) usersList.value = users;
                     else {
-                        // Создаём пользователей по умолчанию
                         usersList.value = [
                             { id: 'u1', phone: '79991234567', password: '123', role: 'admin', name: 'Менеджер', isActive: true },
                             { id: 'u2', phone: '79876543210', password: '123', role: 'barista', name: 'Бариста', isActive: true }
                         ];
                         await db.saveFile('users.json', usersList.value);
                     }
-                    
-                    console.log('Все данные загружены из GitHub');
                 } catch (error) {
                     console.error('Refresh error:', error);
                     offline.value = true;
                 }
             }
 
-            async function saveStock() {
-                await db.scheduleSave('stock.json', stockItems.value);
-            }
-
-            async function saveTechCards() {
-                await db.scheduleSave('techcards.json', techCards.value);
-            }
-
-            async function saveSupply(supply) {
-                supplyHistory.value.unshift(supply);
-                await db.scheduleSave('supplies.json', supplyHistory.value);
-            }
-
-            async function saveSale(sale) {
-                saleHistory.value.unshift(sale);
-                await db.scheduleSave('sales.json', saleHistory.value);
-            }
-
-            async function saveDamage(damage) {
-                damageHistory.value.unshift(damage);
-                await db.scheduleSave('damage.json', damageHistory.value);
-            }
-
-            async function saveInventory(report) {
-                inventoryReports.value.unshift(report);
-                await db.scheduleSave('inventory.json', inventoryReports.value);
-            }
-
-            async function saveUsers() {
-                await db.scheduleSave('users.json', usersList.value);
-            }
+            async function saveStock() { await db.scheduleSave('stock.json', stockItems.value); }
+            async function saveTechCards() { await db.scheduleSave('techcards.json', techCards.value); }
+            async function saveSupply(supply) { supplyHistory.value.unshift(supply); await db.scheduleSave('supplies.json', supplyHistory.value); }
+            async function saveSale(sale) { saleHistory.value.unshift(sale); await db.scheduleSave('sales.json', saleHistory.value); }
+            async function saveDamage(damage) { damageHistory.value.unshift(damage); await db.scheduleSave('damage.json', damageHistory.value); }
+            async function saveInventory(report) { inventoryReports.value.unshift(report); await db.scheduleSave('inventory.json', inventoryReports.value); }
+            async function saveUsers() { await db.scheduleSave('users.json', usersList.value); }
 
             const filteredStock = computed(() => stockItems.value.filter(i => (!filterCategory.value || i.category === filterCategory.value) && (!searchStock.value || i.name.toLowerCase().includes(searchStock.value.toLowerCase()))));
             const filteredSupplies = computed(() => supplyHistory.value.filter(l => !supplySearch.value || l.itemName.toLowerCase().includes(supplySearch.value.toLowerCase())));
@@ -741,7 +746,6 @@
                     default: return 'Все сохранено';
                 }
             });
-            
             const syncStatusIcon = computed(() => {
                 switch(syncState.value) {
                     case 'syncing': return 'fas fa-spinner fa-pulse';
@@ -750,24 +754,9 @@
                     default: return 'fas fa-cloud-upload-alt';
                 }
             });
-            
-            const syncStatusClass = computed(() => {
-                if (syncState.value === 'syncing') return 'syncing';
-                if (syncState.value === 'success') return 'success';
-                return '';
-            });
-            
-            const syncButtonClass = computed(() => {
-                if (syncState.value === 'syncing') return 'syncing';
-                if (syncState.value === 'success') return 'success';
-                return '';
-            });
-            
-            const syncButtonIcon = computed(() => {
-                if (syncState.value === 'syncing') return 'fas fa-spinner fa-pulse';
-                if (syncState.value === 'success') return 'fas fa-check';
-                return 'fas fa-cloud-upload-alt';
-            });
+            const syncStatusClass = computed(() => syncState.value === 'syncing' ? 'syncing' : (syncState.value === 'success' ? 'success' : ''));
+            const syncButtonClass = computed(() => syncState.value === 'syncing' ? 'syncing' : (syncState.value === 'success' ? 'success' : ''));
+            const syncButtonIcon = computed(() => syncState.value === 'syncing' ? 'fas fa-spinner fa-pulse' : (syncState.value === 'success' ? 'fas fa-check' : 'fas fa-cloud-upload-alt'));
 
             async function forceSync() {
                 if (syncState.value === 'syncing') return;
@@ -795,38 +784,59 @@
             
             function logout() { user.value = null; }
 
-            // Товары
             async function openItemModal(item) {
                 if(user.value.role !== 'admin') return;
                 let obj = item ? {...item} : { id: Date.now()+'_'+Math.random(), name:'', category: categories.value[0] || 'Продукты', unit:'шт', cost:0, sellPrice:0, quantity:0 };
                 Swal.fire({
                     title: item ? 'Редактировать товар' : 'Новый товар',
-                    html: `<input id="name" class="swal2-input" placeholder="Название" value="${obj.name}">
-                           <select id="cat" class="swal2-select">${categories.value.length ? categories.value.map(c=>`<option ${c===obj.category?'selected':''}>${c}</option>`).join('') : '<option>Продукты</option>'}</select>
-                           <input id="unit" class="swal2-input" placeholder="Ед.изм" value="${obj.unit}">
-                           <input id="cost" type="number" step="0.01" class="swal2-input" placeholder="Себестоимость" value="${obj.cost}">
-                           <input id="sellPrice" type="number" step="0.01" class="swal2-input" placeholder="Продажная цена" value="${obj.sellPrice || 0}">
-                           <input id="qty" type="number" step="0.01" class="swal2-input" placeholder="Кол-во" value="${obj.quantity}">`,
-                    focusConfirm: false, preConfirm: () => {
-                        let name = document.getElementById('name').value, category = document.getElementById('cat').value, unit = document.getElementById('unit').value;
-                        let cost = parseFloat(document.getElementById('cost').value), sellPrice = parseFloat(document.getElementById('sellPrice').value), qty = parseFloat(document.getElementById('qty').value);
-                        if(!name) Swal.showValidationMessage('Название'); if(isNaN(cost)) Swal.showValidationMessage('Себестоимость');
-                        return {name, category, unit, cost, sellPrice: isNaN(sellPrice)?0:sellPrice, quantity: qty};
+                    html: `<div style="display:flex; flex-direction:column; gap:8px;">
+                        <input id="name" class="swal2-input" placeholder="Название товара" value="${obj.name}" style="width:100%;">
+                        <select id="cat" class="swal2-select" style="width:100%;">${categories.value.length ? categories.value.map(c=>`<option ${c===obj.category?'selected':''}>${c}</option>`).join('') : '<option>Продукты</option>'}</select>
+                        <input id="unit" class="swal2-input" placeholder="Единица измерения (кг, л, шт)" value="${obj.unit}" style="width:100%;">
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                            <input id="cost" type="number" step="0.01" class="swal2-input" placeholder="Себестоимость" value="${obj.cost}" style="width:100%;">
+                            <input id="sellPrice" type="number" step="0.01" class="swal2-input" placeholder="Продажная цена" value="${obj.sellPrice || 0}" style="width:100%;">
+                        </div>
+                        <input id="qty" type="number" step="0.01" class="swal2-input" placeholder="Начальное количество" value="${obj.quantity}" style="width:100%;">
+                    </div>`,
+                    focusConfirm: false,
+                    preConfirm: () => {
+                        let name = document.getElementById('name').value;
+                        let category = document.getElementById('cat').value;
+                        let unit = document.getElementById('unit').value;
+                        let cost = parseFloat(document.getElementById('cost').value);
+                        let sellPrice = parseFloat(document.getElementById('sellPrice').value);
+                        let qty = parseFloat(document.getElementById('qty').value);
+                        if(!name) Swal.showValidationMessage('Введите название товара');
+                        if(isNaN(cost)) Swal.showValidationMessage('Введите себестоимость');
+                        return {name, category, unit, cost, sellPrice: isNaN(sellPrice)?0:sellPrice, quantity: qty || 0};
                     }
-                }).then(async res => { if(res.isConfirmed) { 
-                    if(item) {
-                        const idx = stockItems.value.findIndex(i => i.id === item.id);
-                        if(idx !== -1) stockItems.value[idx] = {...item, ...res.value};
-                    } else {
-                        stockItems.value.push({id: obj.id, ...res.value});
-                    }
-                    await saveStock();
-                    Swal.fire('Сохранено');
-                } });
+                }).then(async res => { 
+                    if(res.isConfirmed) { 
+                        if(item) {
+                            const idx = stockItems.value.findIndex(i => i.id === item.id);
+                            if(idx !== -1) stockItems.value[idx] = {...item, ...res.value};
+                        } else {
+                            stockItems.value.push({id: obj.id, ...res.value});
+                        }
+                        await saveStock();
+                        Swal.fire('Сохранено');
+                    } 
+                });
             }
 
             async function openIncomeModal(item) {
-                Swal.fire({ title: `Приход: ${item.name}`, input: 'number', inputLabel: `Количество (${item.unit})`, showCancelButton: true, preConfirm: (val) => { let q = parseFloat(val); return (isNaN(q)||q<=0)?false:q; } }).then(async res => {
+                Swal.fire({ 
+                    title: `Приход: ${item.name}`, 
+                    input: 'number', 
+                    inputLabel: `Количество (${item.unit})`, 
+                    inputAttributes: { step: '0.01' },
+                    showCancelButton: true, 
+                    preConfirm: (val) => { 
+                        let q = parseFloat(val); 
+                        return (isNaN(q)||q<=0) ? false : q; 
+                    } 
+                }).then(async res => {
                     if(res.isConfirmed && res.value) {
                         const idx = stockItems.value.findIndex(i => i.id === item.id);
                         if(idx !== -1) {
@@ -848,7 +858,23 @@
             }
 
             async function openDamageModal(item) {
-                Swal.fire({ title: `Списание: ${item.name}`, text: 'Причина: порча, бой', input: 'number', inputLabel: `Количество (${item.unit})`, showCancelButton: true, preConfirm: (val) => { let q = parseFloat(val); if(isNaN(q)||q<=0) return false; if(q > item.quantity) { Swal.showValidationMessage('Недостаточно'); return false; } return q; } }).then(async res => {
+                Swal.fire({ 
+                    title: `Списание: ${item.name}`, 
+                    text: 'Причина: порча, бой, истечение срока', 
+                    input: 'number', 
+                    inputLabel: `Количество для списания (${item.unit})`,
+                    inputAttributes: { step: '0.01' },
+                    showCancelButton: true, 
+                    preConfirm: (val) => { 
+                        let q = parseFloat(val); 
+                        if(isNaN(q)||q<=0) return false; 
+                        if(q > item.quantity) { 
+                            Swal.showValidationMessage('Недостаточно на складе'); 
+                            return false; 
+                        } 
+                        return q; 
+                    } 
+                }).then(async res => {
                     if(res.isConfirmed && res.value) {
                         const idx = stockItems.value.findIndex(i => i.id === item.id);
                         if(idx !== -1) {
@@ -871,15 +897,26 @@
             }
 
             async function sellRecipe(card) {
-                if(!card.ingredients || card.ingredients.length === 0) { Swal.fire('Ошибка', 'Нет ингредиентов', 'error'); return; }
+                if(!card.ingredients || card.ingredients.length === 0) { 
+                    Swal.fire('Ошибка', 'В техкарте нет ингредиентов', 'error'); 
+                    return; 
+                }
+                
                 let missing = [];
                 for(let ing of card.ingredients) {
                     let stockItem = stockItems.value.find(i => i.id === ing.itemId);
                     if(!stockItem || stockItem.quantity < ing.qty) missing.push(ing.itemName);
                 }
-                if(missing.length) { Swal.fire('Не хватает', missing.join(', '), 'warning'); return; }
+                if(missing.length) { 
+                    Swal.fire('Не хватает ингредиентов', missing.join(', '), 'warning'); 
+                    return; 
+                }
                 
-                const confirm = await Swal.fire({ title: `Продажа ${card.name}`, text: `Себестоимость: ${calculateCardCost(card)}₽, Продажа: ${card.sellPrice || 0}₽`, showCancelButton: true });
+                const confirm = await Swal.fire({ 
+                    title: `Продажа ${card.name}`, 
+                    html: `Себестоимость: ${formatNumber(calculateCardCost(card))}₽<br>Продажа: ${formatNumber(card.sellPrice || 0)}₽<br>Прибыль: ${formatNumber((card.sellPrice || 0) - calculateCardCost(card))}₽`, 
+                    showCancelButton: true 
+                });
                 if(!confirm.isConfirmed) return;
                 
                 let totalCost = 0;
@@ -905,8 +942,16 @@
             }
 
             function openSaleByRecipeModal() {
-                if(techCards.value.length === 0) { Swal.fire('Нет техкарт', 'Создайте техкарты', 'info'); return; }
-                Swal.fire({ title: 'Продажа по рецепту', input: 'select', inputOptions: Object.fromEntries(techCards.value.map(c => [c.id, c.name])), showCancelButton: true }).then(res => {
+                if(techCards.value.length === 0) { 
+                    Swal.fire('Нет техкарт', 'Создайте техкарты в разделе "Рецепты"', 'info'); 
+                    return; 
+                }
+                Swal.fire({ 
+                    title: 'Продажа по рецепту', 
+                    input: 'select', 
+                    inputOptions: Object.fromEntries(techCards.value.map(c => [c.id, c.name])), 
+                    showCancelButton: true 
+                }).then(res => {
                     if(res.isConfirmed && res.value) {
                         let card = techCards.value.find(c => c.id === res.value);
                         if(card) sellRecipe(card);
@@ -923,21 +968,22 @@
                 return total;
             }
 
-            // Техкарты
             async function openTechCardModal(card) {
                 if(user.value.role !== 'admin') return;
                 let cardObj = card ? {...card} : { id: Date.now()+'_tc', name: '', sellPrice: 0, ingredients: [] };
                 Swal.fire({
                     title: card ? 'Редактировать карту' : 'Новая карта',
-                    html: `<input id="tc-name" class="swal2-input" placeholder="Название" value="${cardObj.name}">
-                           <input id="tc-sellPrice" type="number" step="0.01" class="swal2-input" placeholder="Продажная цена" value="${cardObj.sellPrice || 0}">
-                           <div id="ing-list" style="max-height:300px;overflow:auto;margin:10px 0;"></div>
-                           <button type="button" id="add-ing" class="btn btn-outline" style="margin:8px;">+ Добавить ингредиент</button>`,
+                    html: `<div style="display:flex; flex-direction:column; gap:8px;">
+                        <input id="tc-name" class="swal2-input" placeholder="Название напитка" value="${cardObj.name}">
+                        <input id="tc-sellPrice" type="number" step="0.01" class="swal2-input" placeholder="Продажная цена (₽)" value="${cardObj.sellPrice || 0}">
+                        <div id="ing-list" style="max-height:300px;overflow:auto;margin:10px 0;"></div>
+                        <button type="button" id="add-ing" class="btn btn-outline" style="margin:8px;">+ Добавить ингредиент</button>
+                    </div>`,
                     didOpen: () => { renderIngredients(cardObj); },
                     preConfirm: () => {
                         let name = document.getElementById('tc-name').value;
                         let sellPrice = parseFloat(document.getElementById('tc-sellPrice').value);
-                        if(!name) Swal.showValidationMessage('Название');
+                        if(!name) Swal.showValidationMessage('Введите название');
                         let ings = collectIngredientsFromDOM();
                         return { name, sellPrice: isNaN(sellPrice)?0:sellPrice, ingredients: ings };
                     }
@@ -959,10 +1005,18 @@
                     const container = document.getElementById('ing-list'); 
                     if(!container) return; 
                     container.innerHTML=''; 
+                    if(!cardObj.ingredients.length) {
+                        container.innerHTML = '<div style="text-align:center; color:#94A3B8; padding:10px;">Нет ингредиентов. Нажмите "+" чтобы добавить</div>';
+                    }
                     cardObj.ingredients.forEach((ing,idx)=>{ 
                         let div=document.createElement('div'); 
                         div.style.marginBottom='8px'; 
-                        div.innerHTML=`<select class="ing-select" data-idx="${idx}" style="width:50%">${stockItems.value.map(s=>`<option value="${s.id}" ${s.id===ing.itemId?'selected':''}>${s.name}</option>`).join('')}</select> <input class="ing-qty" data-idx="${idx}" type="number" step="0.01" value="${ing.qty}" style="width:80px;"> <button type="button" class="del-ing" data-idx="${idx}">🗑️</button>`; 
+                        div.style.display='flex'; 
+                        div.style.gap='8px';
+                        div.style.flexWrap='wrap';
+                        div.innerHTML=`<select class="ing-select" data-idx="${idx}" style="flex:2; min-width:120px;">${stockItems.value.map(s=>`<option value="${s.id}" ${s.id===ing.itemId?'selected':''}>${s.name} (${s.unit})</option>`).join('')}</select> 
+                                   <input class="ing-qty" data-idx="${idx}" type="number" step="0.01" value="${ing.qty}" style="width:80px;" placeholder="Кол-во">
+                                   <button type="button" class="del-ing" data-idx="${idx}" style="background:#EF4444; color:white; border:none; border-radius:20px; padding:4px 10px;">🗑️</button>`; 
                         container.appendChild(div); 
                     }); 
                     document.querySelectorAll('.del-ing').forEach(btn=>btn.addEventListener('click',(e)=>{ 
@@ -982,13 +1036,12 @@
                         let itemId=sel.value; 
                         let qty=parseFloat(document.querySelector(`.ing-qty[data-idx="${idx}"]`).value); 
                         let stockItem=stockItems.value.find(s=>s.id===itemId); 
-                        if(stockItem && !isNaN(qty)) ings.push({itemId, itemName:stockItem.name, qty, unit:stockItem.unit}); 
+                        if(stockItem && !isNaN(qty) && qty > 0) ings.push({itemId, itemName:stockItem.name, qty, unit:stockItem.unit}); 
                     }); 
                     return ings; 
                 }
             }
 
-            // Инвентаризация
             function startInventory() { 
                 if(activeInventory.value) return; 
                 activeInventory.value={startedAt:Date.now()}; 
@@ -1001,8 +1054,8 @@
                 let diffs=[]; 
                 for(let item of stockItems.value){ 
                     let fact=inventoryCounts.value[item.id]; 
-                    if(fact!==undefined && fact!==item.quantity){ 
-                        diffs.push({name:item.name, oldQty:item.quantity, newQty:fact, diff:fact-item.quantity}); 
+                    if(fact!==undefined && Math.abs(fact - item.quantity) > 0.001){ 
+                        diffs.push({name:item.name, oldQty:formatNumber(item.quantity), newQty:formatNumber(fact), diff:formatNumber(fact - item.quantity)}); 
                         item.quantity = fact;
                     } 
                 } 
@@ -1014,19 +1067,64 @@
             }
             
             function cancelInventory() { activeInventory.value=null; inventoryCounts.value={}; }
-            function viewInventoryReport(rep) { Swal.fire('Детали', `<pre>${rep.differences}</pre>`,'info'); }
+            function viewInventoryReport(rep) { Swal.fire('Детали инвентаризации', `<pre style="text-align:left;">${rep.differences}</pre>`,'info'); }
 
-            // Аналитика
+            // Аналитика с детализацией по категориям
             async function generateAnalytics() {
                 let start = new Date(analyticsStartDate.value); 
                 let end = new Date(analyticsEndDate.value); 
                 end.setHours(23,59,59);
-                let salesInPeriod = saleHistory.value.filter(s=>new Date(s.date)>=start && new Date(s.date)<=end);
-                let damageInPeriod = damageHistory.value.filter(d=>new Date(d.date)>=start && new Date(d.date)<=end);
-                let revenue = salesInPeriod.reduce((sum,s)=>sum + (s.revenue || 0),0);
-                let cost = salesInPeriod.reduce((sum,s)=>sum + (s.totalCost || 0),0);
-                let damageCost = damageInPeriod.reduce((sum,d)=>sum + (d.costPerUnit * d.quantity),0);
+                
+                let salesInPeriod = saleHistory.value.filter(s => new Date(s.date) >= start && new Date(s.date) <= end);
+                let damageInPeriod = damageHistory.value.filter(d => new Date(d.date) >= start && new Date(d.date) <= end);
+                
+                let revenue = salesInPeriod.reduce((sum,s) => sum + (s.revenue || 0), 0);
+                let cost = salesInPeriod.reduce((sum,s) => sum + (s.totalCost || 0), 0);
+                let damageCost = damageInPeriod.reduce((sum,d) => sum + (d.costPerUnit * d.quantity), 0);
                 profitReport.value = { revenue, cost, profit: revenue - cost, damageCost };
+                
+                // Группировка продаж по категориям
+                const salesMap = new Map(); // key: "category|itemName|unit"
+                
+                for (const sale of salesInPeriod) {
+                    if (sale.ingredients && Array.isArray(sale.ingredients)) {
+                        for (const ing of sale.ingredients) {
+                            const stockItem = stockItems.value.find(i => i.id === ing.itemId);
+                            const category = stockItem?.category || 'Товары';
+                            const key = `${category}|${ing.itemName}|${ing.unit}`;
+                            if (salesMap.has(key)) {
+                                salesMap.get(key).quantity += ing.qty;
+                            } else {
+                                salesMap.set(key, {
+                                    category: category,
+                                    name: ing.itemName,
+                                    quantity: ing.qty,
+                                    unit: ing.unit
+                                });
+                            }
+                        }
+                    }
+                }
+                
+                // Группируем по категориям
+                const grouped = new Map();
+                for (const item of salesMap.values()) {
+                    if (!grouped.has(item.category)) {
+                        grouped.set(item.category, []);
+                    }
+                    grouped.get(item.category).push({
+                        name: item.name,
+                        quantity: item.quantity,
+                        unit: item.unit
+                    });
+                }
+                
+                salesByCategory.value = Array.from(grouped.entries()).map(([name, items]) => ({
+                    name: name,
+                    items: items.sort((a,b) => b.quantity - a.quantity)
+                }));
+                
+                analyticsGenerated.value = true;
             }
 
             function setAnalyticsPeriod(period) {
@@ -1040,17 +1138,14 @@
                 generateAnalytics();
             }
 
-            // Категории
             async function addCategory() { 
                 if(newCategory.value && !categories.value.includes(newCategory.value)){ 
                     categories.value.push(newCategory.value); 
-                    // Категории не сохраняем отдельно, они извлекаются из товаров
                     newCategory.value=''; 
                 } 
             }
             
             async function removeCategory(cat) { 
-                // Проверяем, есть ли товары в этой категории
                 const hasItems = stockItems.value.some(i => i.category === cat);
                 if(hasItems) {
                     Swal.fire('Невозможно удалить', 'Сначала переместите или удалите товары из этой категории', 'warning');
@@ -1059,17 +1154,18 @@
                 categories.value = categories.value.filter(c=>c!==cat); 
             }
 
-            // Пользователи (админ)
             async function openUserModal(u) {
                 Swal.fire({
-                    title: u ? 'Редактировать' : 'Новый пользователь',
-                    html: `<input id="name" class="swal2-input" placeholder="Имя" value="${u?.name || ''}">
-                           <input id="phone" class="swal2-input" placeholder="Телефон (79991234567)" value="${u?.phone || ''}">
-                           <input id="password" class="swal2-input" placeholder="Пароль" value="${u?.password || ''}">
-                           <select id="role" class="swal2-select">
-                               <option value="admin" ${u?.role === 'admin' ? 'selected' : ''}>Администратор</option>
-                               <option value="barista" ${u?.role === 'barista' ? 'selected' : ''}>Бариста</option>
-                           </select>`,
+                    title: u ? 'Редактировать пользователя' : 'Новый пользователь',
+                    html: `<div style="display:flex; flex-direction:column; gap:8px;">
+                        <input id="name" class="swal2-input" placeholder="Имя" value="${u?.name || ''}">
+                        <input id="phone" class="swal2-input" placeholder="Телефон (79991234567)" value="${u?.phone || ''}">
+                        <input id="password" class="swal2-input" placeholder="Пароль" value="${u?.password || ''}">
+                        <select id="role" class="swal2-select">
+                            <option value="admin" ${u?.role === 'admin' ? 'selected' : ''}>Администратор</option>
+                            <option value="barista" ${u?.role === 'barista' ? 'selected' : ''}>Бариста</option>
+                        </select>
+                    </div>`,
                     preConfirm: () => ({
                         name: document.getElementById('name').value,
                         phone: normalizePhone(document.getElementById('phone').value),
@@ -1098,14 +1194,13 @@
             }
             
             async function deleteUser(u) { 
-                const confirm = await Swal.fire({ title: 'Удалить?', text: u.name, showCancelButton: true }); 
+                const confirm = await Swal.fire({ title: 'Удалить пользователя?', text: u.name, showCancelButton: true }); 
                 if(confirm.isConfirmed) { 
                     usersList.value = usersList.value.filter(usr => usr.id !== u.id);
                     await saveUsers(); 
                 } 
             }
 
-            // Экспорт/Импорт
             function exportData() { 
                 let data = { 
                     stock: stockItems.value, 
@@ -1158,7 +1253,21 @@
                 window.addEventListener('offline', () => { offline.value=true; });
             });
             
-            return { user, loginPhone, loginPass, handleLogin, logout, activeTab, stockItems, categories, techCards, inventoryReports, supplyHistory, usersList, filterCategory, searchStock, filteredStock, filteredSupplies, openItemModal, openIncomeModal, openDamageModal, openTechCardModal, calculateCardCost, sellRecipe, openSaleByRecipeModal, startInventory, activeInventory, inventoryCounts, completeInventory, cancelInventory, viewInventoryReport, addCategory, removeCategory, newCategory, analyticsStartDate, analyticsEndDate, profitReport, generateAnalytics, setAnalyticsPeriod, openUserModal, toggleUserActive, deleteUser, exportData, importData, syncOfflineData, offline, syncStatusText, syncStatusIcon, syncStatusClass, syncButtonClass, syncButtonIcon, forceSync };
+            return { 
+                user, loginPhone, loginPass, handleLogin, logout, activeTab, 
+                stockItems, categories, techCards, inventoryReports, supplyHistory, usersList,
+                filterCategory, searchStock, filteredStock, filteredSupplies,
+                openItemModal, openIncomeModal, openDamageModal, openTechCardModal,
+                calculateCardCost, sellRecipe, openSaleByRecipeModal,
+                startInventory, activeInventory, inventoryCounts, completeInventory, cancelInventory, viewInventoryReport,
+                addCategory, removeCategory, newCategory,
+                analyticsStartDate, analyticsEndDate, profitReport, salesByCategory, analyticsGenerated,
+                generateAnalytics, setAnalyticsPeriod,
+                openUserModal, toggleUserActive, deleteUser,
+                exportData, importData, syncOfflineData, offline,
+                syncStatusText, syncStatusIcon, syncStatusClass, syncButtonClass, syncButtonIcon, forceSync,
+                formatNumber
+            };
         }
     }).mount('#app');
 </script>
