@@ -1,0 +1,10 @@
+[
+  {
+    "id": "u1",
+    "phone": "79998700833",
+    "password": "123Qq",
+    "role": "admin",
+    "name": "Артур",
+    "isActive": true
+  }
+]
