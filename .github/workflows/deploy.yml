@@ -19,13 +19,14 @@ jobs:
         env:
           TOKEN_PWA: ${{ secrets.TOKEN_PWA }}
         run: |
-          echo "const GITHUB_TOKEN = '${TOKEN_PWA}';" > $GITHUB_WORKSPACE/config.js
-          ls -la $GITHUB_WORKSPACE/config.js
+          echo "const GITHUB_TOKEN = '${TOKEN_PWA}';" > config.js
+          ls -la config.js
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{ github.workspace }}
+          publish_dir: ./
           publish_branch: gh-pages
           exclude_assets: '.github'
+          force_orphan: true
