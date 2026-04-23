@@ -610,19 +610,12 @@
 
         async getFile(filename) {
             try {
-                const response = await fetch(`${this.apiUrl}/${filename}`, {
-                    headers: this.headers
-                });
+                // Для публичного репозитория читаем через raw URL — токен не нужен
+                const rawUrl = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/data/${filename}`;
+                const response = await fetch(rawUrl);
                 if (response.status === 404) return [];
-                if (response.status === 401) {
-                    console.error('GitHub API: 401 Unauthorized. Проверьте токен.');
-                    return [];
-                }
-                const data = await response.json();
-                // GitHub API возвращает base64 с переносами строк (\n) — их нужно убрать перед atob
-                const cleanBase64 = data.content.replace(/\n/g, '');
-                const decoded = decodeURIComponent(escape(atob(cleanBase64)));
-                return JSON.parse(decoded);
+                const text = await response.text();
+                return JSON.parse(text);
             } catch (error) {
                 console.error(`Ошибка загрузки ${filename}:`, error);
                 return [];
