@@ -8,3 +8,14 @@
     "isActive": true
   }
 ]
+
+[
+  {
+    "id": "u2",
+    "phone": "79771627484",
+    "password": "000",
+    "role": "barista",
+    "name": "Маргарита",
+    "isActive": true
+  }
+]
