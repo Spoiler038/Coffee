@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <style>
         [v-cloak] { display: none !important; }
 
@@ -148,7 +149,10 @@
         }
         .login-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
         .login-card .input { margin-bottom: 12px; }
-        .login-card .btn-primary { width: 100%; margin-top: 8px; font-size: 15px; padding: 14px; }
+        .login-card .btn-primary { 
+            width: 100%; margin-top: 8px; font-size: 15px; padding: 14px;
+            display: flex; align-items: center; justify-content: center;
+        }
 
         /* ===== CARDS ===== */
         .card {
@@ -276,9 +280,37 @@
         }
 
         /* ===== ANALYTICS ===== */
-        .date-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-        .date-row .input { width: auto; flex: 1; min-width: 120px; }
-        .period-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+        .date-row { 
+            display: flex; 
+            flex-wrap: wrap; 
+            align-items: center; 
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .date-picker-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 2;
+            min-width: 200px;
+        }
+        .date-picker-group .input { width: auto; flex: 1; min-width: 110px; margin: 0; }
+        .period-buttons {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+        .calc-btn-wrapper {
+            flex-shrink: 0;
+        }
+        @media (max-width: 640px) {
+            .date-row { flex-direction: column; align-items: stretch; }
+            .date-picker-group { width: 100%; }
+            .period-buttons { justify-content: flex-start; }
+            .calc-btn-wrapper { align-self: flex-end; margin-top: 4px; }
+        }
         .stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
         .stat-row:last-child { border-bottom: none; }
         .sales-group { margin-bottom: 14px; padding-left: 10px; border-left: 3px solid var(--primary); }
@@ -367,7 +399,7 @@
                 <div v-if="authMode==='login'">
                     <input type="text" v-model="loginPhone" @keyup.enter="handleLogin" placeholder="Телефон (+7, 8 или 9...)" class="input" style="margin-bottom:10px;">
                     <input type="password" v-model="loginPass" @keyup.enter="handleLogin" placeholder="Пароль" class="input" style="margin-bottom:16px;">
-                    <button @click="handleLogin" class="btn btn-primary">Войти</button>
+                    <button @click="handleLogin" class="btn btn-primary" style="justify-content: center;">Войти</button>
                 </div>
 
                 <!-- REGISTER -->
@@ -375,7 +407,7 @@
                     <input type="text" v-model="regPhone" placeholder="Телефон" class="input" style="margin-bottom:10px;">
                     <input type="password" v-model="regPass" placeholder="Придумайте пароль" class="input" style="margin-bottom:10px;">
                     <input type="password" v-model="regPass2" placeholder="Повторите пароль" class="input" style="margin-bottom:16px;">
-                    <button @click="handleRegister" class="btn btn-primary">Зарегистрироваться</button>
+                    <button @click="handleRegister" class="btn btn-primary" style="justify-content: center;">Зарегистрироваться</button>
                     <div class="reg-hint">Номер телефона должен быть добавлен администратором</div>
                 </div>
             </div>
@@ -420,6 +452,7 @@
                     <div style="display:flex;gap:6px;">
                         <button v-if="user.role==='admin'" @click="openTechCardModal(null)" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i></button>
                         <button @click="openSaleByRecipeModal" class="btn btn-success btn-sm"><i class="fas fa-cash-register"></i> Продажа</button>
+                        <button @click="importExcelSales" class="btn btn-sm" style="background:#FDCB6E;color:#1E1B3A;"><i class="fas fa-file-excel"></i> XLSX</button>
                     </div>
                 </div>
                 <div v-if="techCards.length===0" class="card" style="text-align:center;color:var(--text-muted);padding:30px;">Нет техкарт</div>
@@ -504,15 +537,19 @@
                 <div class="page-header"><span class="page-title">📈 Аналитика</span></div>
                 <div class="card">
                     <div class="date-row">
-                        <input type="date" v-model="analyticsStartDate" class="input">
-                        <span style="color:var(--text-muted);">—</span>
-                        <input type="date" v-model="analyticsEndDate" class="input">
-                        <button @click="generateAnalytics" class="btn btn-primary btn-sm">Считать</button>
-                    </div>
-                    <div class="period-btns">
-                        <button @click="setAnalyticsPeriod('day')" class="btn btn-sm">День</button>
-                        <button @click="setAnalyticsPeriod('week')" class="btn btn-sm">Неделя</button>
-                        <button @click="setAnalyticsPeriod('month')" class="btn btn-sm">Месяц</button>
+                        <div class="date-picker-group">
+                            <input type="date" v-model="analyticsStartDate" class="input">
+                            <span style="color:var(--text-muted);">—</span>
+                            <input type="date" v-model="analyticsEndDate" class="input">
+                        </div>
+                        <div class="period-buttons">
+                            <button @click="setAnalyticsPeriod('day')" class="btn btn-sm">День</button>
+                            <button @click="setAnalyticsPeriod('week')" class="btn btn-sm">Неделя</button>
+                            <button @click="setAnalyticsPeriod('month')" class="btn btn-sm">Месяц</button>
+                        </div>
+                        <div class="calc-btn-wrapper">
+                            <button @click="generateAnalytics" class="btn btn-primary btn-sm">Считать</button>
+                        </div>
                     </div>
                 </div>
                 <div class="card" v-if="profitReport">
@@ -625,14 +662,14 @@
 </div>
 
 <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-<script src="config.js"></script>
 <script>
 const { createApp, ref, computed, onMounted } = Vue;
 
+// GitHub Config (замените на свои данные)
+const GITHUB_TOKEN = localStorage.getItem('github_token') || '';
 const REPO_OWNER = 'spoiler038';
 const REPO_NAME = 'Coffee';
 const BRANCH = 'main';
-// ID супер-администратора (ваш id из users.json)
 const SUPER_ADMIN_ID = 'u1';
 
 function formatNumber(v) {
@@ -662,24 +699,21 @@ const syncState = ref('idle');
 class GitHubDB {
     constructor() {
         this.apiUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/data`;
-        this.headers = {
-            'Authorization': `token ${GITHUB_TOKEN}`,
-            'Accept': 'application/vnd.github.v3+json'
-        };
+        this.headers = { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' };
         this.pendingWrites = new Map();
         this.writeTimeout = null;
     }
+    
     async getFile(filename) {
-        try {
-            const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/data/${filename}?t=${Date.now()}`;
-            const r = await fetch(url);
-            if (r.status === 404) return [];
-            const text = await r.text();
-            if (!text.trim()) return [];
-            return JSON.parse(text);
-        } catch(e) { console.error('getFile', filename, e); return []; }
+        const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/data/${filename}?t=${Date.now()}`;
+        const r = await fetch(url);
+        if (r.status === 404) return [];
+        const text = await r.text();
+        if (!text.trim()) return [];
+        return JSON.parse(text);
     }
-    async saveFile(filename, data, silent=false) {
+    
+    async saveFile(filename, data) {
         try {
             const getR = await fetch(`${this.apiUrl}/${filename}`, { headers: this.headers });
             let sha = null;
@@ -690,12 +724,10 @@ class GitHubDB {
                 headers: { ...this.headers, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: `Update ${filename}`, content, sha, branch: BRANCH })
             });
-            if (!silent) { syncState.value = 'success'; setTimeout(()=>{ if(syncState.value==='success') syncState.value='idle'; },2000); }
-        } catch(e) {
-            console.error('saveFile', filename, e);
-            if (!silent) syncState.value = 'error';
-        }
+            return true;
+        } catch(e) { console.error('saveFile', filename, e); return false; }
     }
+    
     scheduleSave(filename, data) {
         this.pendingWrites.set(filename, data);
         if (this.writeTimeout) clearTimeout(this.writeTimeout);
@@ -704,11 +736,11 @@ class GitHubDB {
             const writes = [...this.pendingWrites.entries()];
             this.pendingWrites.clear();
             try {
-                for (const [fn, d] of writes) await this.saveFile(fn, d, true);
+                for (const [fn, d] of writes) await this.saveFile(fn, d);
                 syncState.value = 'success';
                 setTimeout(()=>{ if(syncState.value==='success') syncState.value='idle'; },2000);
             } catch { syncState.value = 'error'; }
-        }, 1500);
+        }, 800);
     }
 }
 
@@ -750,9 +782,9 @@ createApp({
 
         const isSuperAdmin = computed(() => user.value?.id === SUPER_ADMIN_ID);
         const canDeleteUser = (u) => {
-            if (u.id === SUPER_ADMIN_ID) return false; // нельзя удалить суперадмина
-            if (isSuperAdmin.value) return true; // суперадмин удаляет всех
-            if (user.value?.role === 'admin' && u.role === 'barista') return true; // admin удаляет баристу
+            if (u.id === SUPER_ADMIN_ID) return false;
+            if (isSuperAdmin.value) return true;
+            if (user.value?.role === 'admin' && u.role === 'barista') return true;
             return false;
         };
 
@@ -808,19 +840,18 @@ createApp({
             if (syncState.value === 'syncing') return;
             syncState.value = 'syncing';
             await Promise.all([
-                db.saveFile('stock.json', stockItems.value, true),
-                db.saveFile('techcards.json', techCards.value, true),
-                db.saveFile('supplies.json', supplyHistory.value, true),
-                db.saveFile('sales.json', saleHistory.value, true),
-                db.saveFile('inventory.json', inventoryReports.value, true),
-                db.saveFile('damage.json', damageHistory.value, true),
-                db.saveFile('users.json', usersList.value, true),
+                db.saveFile('stock.json', stockItems.value),
+                db.saveFile('techcards.json', techCards.value),
+                db.saveFile('supplies.json', supplyHistory.value),
+                db.saveFile('sales.json', saleHistory.value),
+                db.saveFile('inventory.json', inventoryReports.value),
+                db.saveFile('damage.json', damageHistory.value),
+                db.saveFile('users.json', usersList.value),
             ]);
             syncState.value = 'success';
             setTimeout(()=>{ if(syncState.value==='success') syncState.value='idle'; },2000);
         }
 
-        // Автологин
         function tryAutoLogin() {
             const saved = localStorage.getItem('tuchka_session');
             if (!saved) return false;
@@ -828,7 +859,6 @@ createApp({
                 const sess = JSON.parse(saved);
                 const found = usersList.value.find(u => u.id === sess.id && u.isActive !== false);
                 if (!found) { localStorage.removeItem('tuchka_session'); return false; }
-                // Проверка устройства
                 if (found.deviceId && found.deviceId !== getDeviceId()) { localStorage.removeItem('tuchka_session'); return false; }
                 user.value = { id: found.id, phone: found.phone, role: found.role, name: found.name };
                 return true;
@@ -839,12 +869,10 @@ createApp({
             const normalized = normalizePhone(loginPhone.value);
             const found = usersList.value.find(u => u.phone === normalized && u.password === loginPass.value && u.isActive !== false);
             if (!found) { Swal.fire('Ошибка', 'Неверный телефон или пароль', 'error'); return; }
-            // Проверка устройства
             if (found.deviceId && found.deviceId !== getDeviceId()) {
                 Swal.fire('Доступ закрыт', 'Этот аккаунт уже используется на другом устройстве. Обратитесь к администратору.', 'warning');
                 return;
             }
-            // Привязка устройства при первом входе
             if (!found.deviceId) {
                 const idx = usersList.value.findIndex(u => u.id === found.id);
                 usersList.value[idx].deviceId = getDeviceId();
@@ -859,7 +887,6 @@ createApp({
             const normalized = normalizePhone(regPhone.value);
             const preReg = usersList.value.find(u => u.phone === normalized && !u.password);
             if (!preReg) {
-                // Проверим есть ли вообще в системе
                 const exists = usersList.value.find(u => u.phone === normalized);
                 if (exists) { Swal.fire('Уже зарегистрирован', 'Этот номер уже имеет пароль. Войдите через вход.', 'info'); return; }
                 Swal.fire('Номер не найден', 'Ваш номер не добавлен администратором', 'error'); return;
@@ -891,23 +918,17 @@ createApp({
             }
         }
 
-        // ===== СКЛАД =====
+        // Функции для работы с товарами, техкартами, инвентаризацией — сохранены полностью
         async function openItemModal(item) {
             if (user.value.role !== 'admin') return;
             const obj = item ? {...item} : { id: Date.now()+'_'+Math.random(), name:'', category: categories.value[0]||'Продукты', unit:'шт', cost:0, quantity:0 };
             const cats = categories.value.length ? categories.value : ['Продукты'];
             const { value: res } = await Swal.fire({
                 title: item ? '✏️ Редактировать' : '➕ Новый товар',
-                html: `
-                    <div class="input-group"><label>Название</label><input id="s-name" class="swal2-input" value="${(obj.name||'').replace(/"/g,'&quot;')}"></div>
-                    <div class="input-group"><label>Категория</label><select id="s-cat" class="swal2-select">${cats.map(c=>`<option ${c===obj.category?'selected':''}>${c}</option>`).join('')}</select></div>
-                    <div class="input-group"><label>Единица (кг, л, шт...)</label><input id="s-unit" class="swal2-input" value="${obj.unit||''}"></div>
-                    <div class="grid-2">
-                        <div class="input-group"><label>Себестоимость ₽</label><input id="s-cost" type="number" step="0.01" class="swal2-input" value="${obj.cost||0}"></div>
-                        <div class="input-group"><label>Кол-во</label><input id="s-qty" type="number" step="0.01" class="swal2-input" value="${obj.quantity||0}"></div>
-                    </div>
-                    <p style="font-size:11px;color:var(--text-muted);text-align:left;margin-top:4px;">💡 Продажная цена устанавливается в техкарте</p>
-                `,
+                html: `<div class="input-group"><label>Название</label><input id="s-name" class="swal2-input" value="${(obj.name||'').replace(/"/g,'&quot;')}"></div>
+                       <div class="input-group"><label>Категория</label><select id="s-cat" class="swal2-select">${cats.map(c=>`<option ${c===obj.category?'selected':''}>${c}</option>`).join('')}</select></div>
+                       <div class="input-group"><label>Единица (кг, л, шт...)</label><input id="s-unit" class="swal2-input" value="${obj.unit||''}"></div>
+                       <div class="grid-2"><div class="input-group"><label>Себестоимость ₽</label><input id="s-cost" type="number" step="0.01" class="swal2-input" value="${obj.cost||0}"></div><div class="input-group"><label>Кол-во</label><input id="s-qty" type="number" step="0.01" class="swal2-input" value="${obj.quantity||0}"></div></div>`,
                 focusConfirm: false, showCancelButton: true,
                 confirmButtonText: 'Сохранить', cancelButtonText: 'Отмена',
                 preConfirm: () => {
@@ -931,10 +952,7 @@ createApp({
         async function openIncomeModal(item) {
             const { value: res } = await Swal.fire({
                 title: `📦 Приход: ${item.name}`,
-                html: `
-                    <div class="input-group"><label>Количество (${item.unit})</label><input id="i-qty" type="number" step="0.01" class="swal2-input" placeholder="0"></div>
-                    <div class="input-group"><label>Цена за единицу ₽ (если отличается)</label><input id="i-cost" type="number" step="0.01" class="swal2-input" placeholder="${item.cost}" value="${item.cost}"></div>
-                `,
+                html: `<div class="input-group"><label>Количество (${item.unit})</label><input id="i-qty" type="number" step="0.01" class="swal2-input" placeholder="0"></div><div class="input-group"><label>Цена за единицу ₽ (если отличается)</label><input id="i-cost" type="number" step="0.01" class="swal2-input" placeholder="${item.cost}" value="${item.cost}"></div>`,
                 showCancelButton: true, confirmButtonText: 'Оформить', cancelButtonText: 'Отмена',
                 preConfirm: () => {
                     const q = parseFloat(document.getElementById('i-qty').value);
@@ -946,12 +964,10 @@ createApp({
             if (res) {
                 const idx = stockItems.value.findIndex(i=>i.id===item.id);
                 if (idx!==-1) {
-                    // Средняя себестоимость
                     const oldQty = stockItems.value[idx].quantity;
                     const oldCost = stockItems.value[idx].cost;
                     const newQty = oldQty + res.qty;
                     stockItems.value[idx].quantity = newQty;
-                    // Пересчёт средней цены
                     stockItems.value[idx].cost = Math.round(((oldCost * oldQty) + (res.cost * res.qty)) / newQty * 100) / 100;
                     saveStock();
                     saveSupply({ id:Date.now(), itemId:item.id, itemName:item.name, quantity:res.qty, unit:item.unit, costPerUnit:res.cost, date:new Date().toISOString() });
@@ -964,10 +980,7 @@ createApp({
             const reasons = damageReasons.value;
             const { value: res } = await Swal.fire({
                 title: `⚠️ Списание: ${item.name}`,
-                html: `
-                    <div class="input-group"><label>Количество (${item.unit}), доступно: ${formatNumber(item.quantity)}</label><input id="d-qty" type="number" step="0.01" class="swal2-input" placeholder="0"></div>
-                    <div class="input-group"><label>Причина</label><select id="d-reason" class="swal2-select">${reasons.map(r=>`<option>${r}</option>`).join('')}</select></div>
-                `,
+                html: `<div class="input-group"><label>Количество (${item.unit}), доступно: ${formatNumber(item.quantity)}</label><input id="d-qty" type="number" step="0.01" class="swal2-input" placeholder="0"></div><div class="input-group"><label>Причина</label><select id="d-reason" class="swal2-select">${reasons.map(r=>`<option>${r}</option>`).join('')}</select></div>`,
                 showCancelButton: true, confirmButtonText: 'Списать', cancelButtonText: 'Отмена',
                 preConfirm: () => {
                     const q = parseFloat(document.getElementById('d-qty').value);
@@ -987,7 +1000,6 @@ createApp({
             }
         }
 
-        // ===== ТЕХКАРТЫ =====
         function calculateCardCost(card) {
             return card.ingredients.reduce((sum,ing) => {
                 const item = stockItems.value.find(i=>i.id===ing.itemId);
@@ -997,27 +1009,38 @@ createApp({
 
         async function sellRecipe(card) {
             if (!card.ingredients?.length) { Swal.fire('Ошибка','Нет ингредиентов','error'); return; }
-            const missing = card.ingredients.filter(ing => { const s=stockItems.value.find(i=>i.id===ing.itemId); return !s||s.quantity<ing.qty; }).map(i=>i.itemName);
-            if (missing.length) { Swal.fire('Не хватает',missing.join(', '),'warning'); return; }
-            const cost = calculateCardCost(card);
-            const {isConfirmed} = await Swal.fire({
+            const { value: qty } = await Swal.fire({
                 title: `☕ ${card.name}`,
-                html: `<div style="text-align:left;">
-                    <div class="stat-row"><span>Себестоимость</span><span>${formatNumber(cost)} ₽</span></div>
-                    <div class="stat-row"><span>Цена продажи</span><span>${formatNumber(card.sellPrice||0)} ₽</span></div>
-                    <div class="stat-row"><span>Прибыль</span><span class="profit-positive">${formatNumber((card.sellPrice||0)-cost)} ₽</span></div>
-                </div>`,
+                text: 'Количество порций:',
+                input: 'number',
+                inputValue: 1,
+                inputAttributes: { step: '1', min: '1' },
+                showCancelButton: true,
+                confirmButtonText: 'Продать',
+                cancelButtonText: 'Отмена'
+            });
+            if (!qty || qty < 1) return;
+            
+            const missing = card.ingredients.filter(ing => { const s=stockItems.value.find(i=>i.id===ing.itemId); return !s||s.quantity<ing.qty*qty; }).map(i=>i.itemName);
+            if (missing.length) { Swal.fire('Не хватает',missing.join(', '),'warning'); return; }
+            const costPerUnit = calculateCardCost(card);
+            const totalCost = costPerUnit * qty;
+            const revenue = (card.sellPrice||0) * qty;
+            const {isConfirmed} = await Swal.fire({
+                title: `☕ ${card.name} x${qty}`,
+                html: `<div style="text-align:left;"><div class="stat-row"><span>Себестоимость</span><span>${formatNumber(totalCost)} ₽</span></div><div class="stat-row"><span>Цена продажи</span><span>${formatNumber(revenue)} ₽</span></div><div class="stat-row"><span>Прибыль</span><span class="profit-positive">${formatNumber(revenue-totalCost)} ₽</span></div></div>`,
                 showCancelButton:true, confirmButtonText:'✅ Продать', cancelButtonText:'Отмена'
             });
             if (!isConfirmed) return;
-            let totalCost = 0;
             for (const ing of card.ingredients) {
                 const idx = stockItems.value.findIndex(i=>i.id===ing.itemId);
-                if (idx!==-1) { totalCost += stockItems.value[idx].cost*ing.qty; stockItems.value[idx].quantity -= ing.qty; }
+                if (idx!==-1) stockItems.value[idx].quantity -= ing.qty * qty;
             }
             saveStock();
-            saveSale({ id:Date.now(), recipeId:card.id, recipeName:card.name, quantity:1, totalCost, revenue:card.sellPrice||0, ingredients:card.ingredients, date:new Date().toISOString() });
-            Swal.fire({ icon:'success', title:'Продано!', timer:1200, showConfirmButton:false });
+            for (let i=0; i<qty; i++) {
+                saveSale({ id:Date.now()+i, recipeId:card.id, recipeName:card.name, quantity:1, totalCost:costPerUnit, revenue:card.sellPrice||0, ingredients:card.ingredients, date:new Date().toISOString() });
+            }
+            Swal.fire({ icon:'success', title:`Продано ${qty} шт.`, timer:1200, showConfirmButton:false });
         }
 
         async function openSaleByRecipeModal() {
@@ -1033,132 +1056,38 @@ createApp({
         async function openTechCardModal(card) {
             if (user.value.role !== 'admin') return;
             let cardObj = card ? JSON.parse(JSON.stringify(card)) : { id:Date.now()+'_tc', name:'', sellPrice:0, ingredients:[] };
-
-            const getTcHtml = (obj) => `
-                <div class="input-group"><label>Название напитка</label><input id="tc-name" class="swal2-input" value="${obj.name||''}"></div>
-                <div class="input-group"><label>Цена продажи ₽</label><input id="tc-price" type="number" step="1" class="swal2-input" value="${obj.sellPrice||0}"></div>
-                <div class="input-group"><label>Ингредиенты</label>
-                    <div id="ing-list" style="max-height:250px;overflow:auto;"></div>
-                    <button type="button" id="add-ing" style="margin-top:8px;padding:8px 16px;border-radius:20px;border:none;background:var(--primary);color:white;cursor:pointer;font-family:inherit;font-weight:700;">+ Ингредиент</button>
-                </div>`;
-
-            const renderIngs = (obj) => {
+            const getTcHtml = () => `<div class="input-group"><label>Название напитка</label><input id="tc-name" class="swal2-input" value="${(cardObj.name||'').replace(/"/g,'&quot;')}"></div>
+                                    <div class="input-group"><label>Цена продажи ₽</label><input id="tc-price" type="number" step="1" class="swal2-input" value="${cardObj.sellPrice||0}"></div>
+                                    <div class="input-group"><label>Ингредиенты</label><div id="ing-list" style="max-height:250px;overflow:auto;"></div><button type="button" id="add-ing" style="margin-top:8px;padding:8px 16px;border-radius:20px;border:none;background:var(--primary);color:white;cursor:pointer;font-family:inherit;font-weight:700;">+ Ингредиент</button></div>`;
+            const renderIngs = () => {
                 const c = document.getElementById('ing-list'); if(!c) return;
-                if (!obj.ingredients.length) { c.innerHTML='<div style="color:var(--text-muted);font-size:13px;padding:10px;">Нет ингредиентов</div>'; return; }
-                c.innerHTML = obj.ingredients.map((ing,i) => `
-                    <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
-                        <select class="ing-sel" data-i="${i}" style="flex:2;padding:8px;border-radius:10px;border:1.5px solid var(--border);font-family:inherit;background:var(--bg);">
-                            ${stockItems.value.map(s=>`<option value="${s.id}" ${s.id===ing.itemId?'selected':''}>${s.name} (${s.unit})</option>`).join('')}
-                        </select>
-                        <input class="ing-qty" data-i="${i}" type="number" step="0.01" value="${ing.qty}" style="width:75px;padding:8px;border-radius:10px;border:1.5px solid var(--border);font-family:inherit;">
-                        <button type="button" class="del-ing" data-i="${i}" style="background:var(--danger);color:white;border:none;border-radius:20px;padding:6px 10px;cursor:pointer;">✕</button>
-                    </div>`).join('');
-                c.querySelectorAll('.del-ing').forEach(b=>b.addEventListener('click',()=>{ obj.ingredients.splice(parseInt(b.dataset.i),1); renderIngs(obj); }));
+                if (!cardObj.ingredients.length) { c.innerHTML='<div style="color:var(--text-muted);font-size:13px;padding:10px;">Нет ингредиентов</div>'; return; }
+                c.innerHTML = cardObj.ingredients.map((ing,i) => `<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;"><select class="ing-sel" data-i="${i}" style="flex:2;padding:8px;border-radius:10px;border:1.5px solid var(--border);font-family:inherit;background:var(--bg);">${stockItems.value.map(s=>`<option value="${s.id}" ${s.id===ing.itemId?'selected':''}>${s.name} (${s.unit})</option>`).join('')}</select><input class="ing-qty" data-i="${i}" type="number" step="0.01" value="${ing.qty}" style="width:75px;padding:8px;border-radius:10px;border:1.5px solid var(--border);font-family:inherit;"><button type="button" class="del-ing" data-i="${i}" style="background:var(--danger);color:white;border:none;border-radius:20px;padding:6px 10px;cursor:pointer;">✕</button></div>`).join('');
+                c.querySelectorAll('.del-ing').forEach(b=>b.addEventListener('click',()=>{ cardObj.ingredients.splice(parseInt(b.dataset.i),1); renderIngs(); }));
             };
-
-            const {isConfirmed} = await Swal.fire({
+            const {isConfirmed, value: res} = await Swal.fire({
                 title: card ? '✏️ Техкарта' : '➕ Новая техкарта',
-                html: getTcHtml(cardObj),
-                focusConfirm:false, showCancelButton:true,
+                html: getTcHtml(), focusConfirm:false, showCancelButton:true,
                 confirmButtonText:'Сохранить', cancelButtonText:'Отмена',
-                didOpen:() => {
-                    renderIngs(cardObj);
-                    document.getElementById('add-ing')?.addEventListener('click',()=>{
-                        if (!stockItems.value.length) { Swal.fire('Нет товаров','Добавьте товары на склад','warning'); return; }
-                        cardObj.ingredients.push({itemId:stockItems.value[0].id,itemName:stockItems.value[0].name,qty:0,unit:stockItems.value[0].unit});
-                        renderIngs(cardObj);
-                    });
-                },
+                didOpen:() => { renderIngs(); document.getElementById('add-ing')?.addEventListener('click',()=>{ if (!stockItems.value.length) { Swal.showValidationMessage('Добавьте товары на склад'); return; } cardObj.ingredients.push({itemId:stockItems.value[0].id,itemName:stockItems.value[0].name,qty:0,unit:stockItems.value[0].unit}); renderIngs(); }); },
                 preConfirm:() => {
-                    const name = document.getElementById('tc-name').value;
-                    if (!name) return Swal.showValidationMessage('Введите название');
-                    const price = parseFloat(document.getElementById('tc-price').value)||0;
+                    const name = document.getElementById('tc-name')?.value?.trim();
+                    if (!name) { Swal.showValidationMessage('Введите название'); return false; }
+                    const price = parseFloat(document.getElementById('tc-price')?.value)||0;
                     const ings = [];
-                    document.querySelectorAll('.ing-sel').forEach((sel,i)=>{
-                        const item = stockItems.value.find(s=>s.id===sel.value);
-                        const qty = parseFloat(document.querySelector(`.ing-qty[data-i="${i}"]`)?.value);
-                        if (item && !isNaN(qty) && qty>0) ings.push({itemId:item.id,itemName:item.name,qty,unit:item.unit});
-                    });
-                    return {name, sellPrice:price, ingredients:ings};
+                    document.querySelectorAll('.ing-sel').forEach((sel,i)=>{ const item = stockItems.value.find(s=>s.id===sel.value); const qty = parseFloat(document.querySelector(`.ing-qty[data-i="${i}"]`)?.value); if (item && !isNaN(qty) && qty>0) ings.push({itemId:item.id,itemName:item.name,qty,unit:item.unit}); });
+                    cardObj.name = name; cardObj.sellPrice = price; cardObj.ingredients = ings;
+                    return true;
                 }
             });
             if (isConfirmed) {
-                // apply from preConfirm result - it's in the resolved promise value
+                if (card) { const i=techCards.value.findIndex(c=>c.id===card.id); if(i!==-1) techCards.value[i]=cardObj; }
+                else techCards.value.push(cardObj);
+                saveTechCards();
+                Swal.fire({icon:'success',title:'Сохранено',timer:1200,showConfirmButton:false});
             }
-            // re-fire for correct result
-            const {value:res, isConfirmed:ok} = await (async()=>{
-                // already handled above, use a workaround
-                return {value: null, isConfirmed:false};
-            })();
         }
 
-        // Simplified techcard save - rewrite openTechCardModal properly
-        async function saveTechCardModal(card) {
-            if (user.value.role !== 'admin') return;
-            let cardObj = card ? JSON.parse(JSON.stringify(card)) : { id:Date.now()+'_tc', name:'', sellPrice:0, ingredients:[] };
-
-            return new Promise((resolve) => {
-                const getTcHtml = () => `
-                    <div class="input-group"><label>Название напитка</label><input id="tc-name" class="swal2-input" value="${(cardObj.name||'').replace(/"/g,'&quot;')}"></div>
-                    <div class="input-group"><label>Цена продажи ₽</label><input id="tc-price" type="number" step="1" class="swal2-input" value="${cardObj.sellPrice||0}"></div>
-                    <div class="input-group"><label>Ингредиенты</label>
-                        <div id="ing-list" style="max-height:250px;overflow:auto;margin-bottom:6px;"></div>
-                        <button type="button" id="add-ing" style="padding:8px 16px;border-radius:20px;border:none;background:var(--primary);color:white;cursor:pointer;font-family:inherit;font-weight:700;width:100%;">+ Добавить ингредиент</button>
-                    </div>`;
-
-                const renderIngs = () => {
-                    const c = document.getElementById('ing-list'); if(!c) return;
-                    if (!cardObj.ingredients.length) { c.innerHTML='<div style="color:var(--text-muted);font-size:13px;padding:8px;">Нет ингредиентов</div>'; return; }
-                    c.innerHTML = cardObj.ingredients.map((ing,i) => `
-                        <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
-                            <select class="ing-sel" data-i="${i}" style="flex:2;padding:8px;border-radius:10px;border:1.5px solid var(--border);font-family:inherit;background:var(--bg);font-size:13px;">
-                                ${stockItems.value.map(s=>`<option value="${s.id}" ${s.id===ing.itemId?'selected':''}>${s.name} (${s.unit})</option>`).join('')}
-                            </select>
-                            <input class="ing-qty" data-i="${i}" type="number" step="0.01" value="${ing.qty}" placeholder="Кол" style="width:70px;padding:8px;border-radius:10px;border:1.5px solid var(--border);font-family:inherit;">
-                            <button type="button" class="del-ing" data-i="${i}" style="background:var(--danger);color:white;border:none;border-radius:20px;padding:7px 10px;cursor:pointer;flex-shrink:0;">✕</button>
-                        </div>`).join('');
-                    c.querySelectorAll('.del-ing').forEach(b=>b.addEventListener('click',()=>{ cardObj.ingredients.splice(parseInt(b.dataset.i),1); renderIngs(); }));
-                };
-
-                Swal.fire({
-                    title: card ? '✏️ Техкарта' : '➕ Новая техкарта',
-                    html: getTcHtml(),
-                    focusConfirm:false, showCancelButton:true,
-                    confirmButtonText:'Сохранить', cancelButtonText:'Отмена',
-                    didOpen:() => {
-                        renderIngs();
-                        document.getElementById('add-ing')?.addEventListener('click',()=>{
-                            if (!stockItems.value.length) { Swal.showValidationMessage('Добавьте товары на склад'); return; }
-                            cardObj.ingredients.push({itemId:stockItems.value[0].id,itemName:stockItems.value[0].name,qty:0,unit:stockItems.value[0].unit});
-                            renderIngs();
-                        });
-                    },
-                    preConfirm:() => {
-                        const name = document.getElementById('tc-name')?.value?.trim();
-                        if (!name) { Swal.showValidationMessage('Введите название'); return false; }
-                        const price = parseFloat(document.getElementById('tc-price')?.value)||0;
-                        const ings = [];
-                        document.querySelectorAll('.ing-sel').forEach((sel,i)=>{
-                            const item = stockItems.value.find(s=>s.id===sel.value);
-                            const qty = parseFloat(document.querySelector(`.ing-qty[data-i="${i}"]`)?.value);
-                            if (item && !isNaN(qty) && qty>0) ings.push({itemId:item.id,itemName:item.name,qty,unit:item.unit});
-                        });
-                        cardObj.name = name; cardObj.sellPrice = price; cardObj.ingredients = ings;
-                        return true;
-                    }
-                }).then(async res => {
-                    if (res.isConfirmed) {
-                        if (card) { const i=techCards.value.findIndex(c=>c.id===card.id); if(i!==-1) techCards.value[i]=cardObj; }
-                        else techCards.value.push(cardObj);
-                        saveTechCards();
-                        Swal.fire({icon:'success',title:'Сохранено',timer:1200,showConfirmButton:false});
-                    }
-                    resolve();
-                });
-            });
-        }
-
-        // ===== ИНВЕНТАРИЗАЦИЯ =====
         function startInventory() { activeInventory.value={startedAt:Date.now()}; inventoryCounts.value={}; stockItems.value.forEach(i=>{inventoryCounts.value[i.id]=i.quantity;}); }
         async function completeInventory() {
             const diffs=[];
@@ -1177,7 +1106,6 @@ createApp({
             catch { Swal.fire('Детали',rep.differences||'Нет данных','info'); }
         }
 
-        // ===== АНАЛИТИКА =====
         async function generateAnalytics() {
             const start = new Date(analyticsStartDate.value);
             const end = new Date(analyticsEndDate.value); end.setHours(23,59,59);
@@ -1216,38 +1144,61 @@ createApp({
             generateAnalytics();
         }
 
-        // ===== КАТЕГОРИИ =====
+        async function importExcelSales(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const data = await file.arrayBuffer();
+            const workbook = XLSX.read(data);
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+            const salesData = [];
+            for (let i = 6; i < rows.length; i++) {
+                const row = rows[i];
+                if (!row || row.length < 4) continue;
+                const name = (row[1] || '').toString().trim();
+                const qty = parseFloat(row[2]);
+                const price = parseFloat(row[3]);
+                if (!name || isNaN(qty) || isNaN(price) || qty <= 0) continue;
+                salesData.push({ name, qty, price, date: new Date().toISOString() });
+            }
+            if (!salesData.length) { Swal.fire('Нет данных', 'Не удалось найти продажи в файле', 'warning'); return; }
+            let imported = 0, matched = 0;
+            for (const sale of salesData) {
+                const techCard = techCards.value.find(c => c.name.toLowerCase() === sale.name.toLowerCase());
+                if (techCard) {
+                    for (let i = 0; i < sale.qty; i++) {
+                        const totalCost = calculateCardCost(techCard);
+                        saveSale({ id:Date.now()+i, recipeId:techCard.id, recipeName:techCard.name, quantity:1, totalCost, revenue:techCard.sellPrice||0, ingredients:techCard.ingredients, date:sale.date });
+                    }
+                    matched++;
+                }
+                imported++;
+            }
+            await forceSync();
+            Swal.fire({ icon:'success', title:'Импорт завершён', html:`Загружено позиций: ${imported}<br>Сопоставлено с техкартами: ${matched}`, timer:3000, showConfirmButton:false });
+        }
+
         function addCategory() { if(newCategory.value&&!categories.value.includes(newCategory.value)){categories.value.push(newCategory.value);newCategory.value='';} }
         function removeCategory(c) { if(stockItems.value.some(i=>i.category===c)){Swal.fire('Нельзя','Сначала переместите товары','warning');return;} categories.value=categories.value.filter(x=>x!==c); }
         function addDamageReason() { if(newDamageReason.value&&!damageReasons.value.includes(newDamageReason.value)){damageReasons.value.push(newDamageReason.value);newDamageReason.value='';} }
         function removeDamageReason(r) { damageReasons.value=damageReasons.value.filter(x=>x!==r); }
 
-        // ===== ПОЛЬЗОВАТЕЛИ =====
         async function openUserModal(u) {
-            const isNew = !u;
-            const canSetRole = isSuperAdmin.value || (user.value?.role === 'admin' && (!u || u.role === 'barista'));
-            const { value:res, isConfirmed } = await Swal.fire({
+            const isSuper = isSuperAdmin.value;
+            const { value:res } = await Swal.fire({
                 title: u ? '✏️ Пользователь' : '➕ Новый пользователь',
-                html: `
-                    <div class="input-group"><label>Имя</label><input id="u-name" class="swal2-input" value="${u?.name||''}"></div>
-                    <div class="input-group"><label>Телефон</label><input id="u-phone" class="swal2-input" placeholder="79991234567" value="${u?.phone||''}" ${!isNew&&!isSuperAdmin.value?'readonly':''}></div>
-                    ${isSuperAdmin.value ? `<div class="input-group"><label>Пароль (необязательно)</label><input id="u-pass" class="swal2-input" placeholder="Оставьте пустым — установит сам" value="${u?.password||''}"></div>` : ''}
-                    <div class="input-group"><label>Роль</label><select id="u-role" class="swal2-select" ${!canSetRole?'disabled':''}>
-                        ${isSuperAdmin.value ? `<option value="admin" ${u?.role==='admin'?'selected':''}>Администратор</option>` : ''}
-                        <option value="barista" ${u?.role==='barista'?'selected':''}>Бариста</option>
-                    </select></div>
-                `,
+                html: `<div class="input-group"><label>Имя</label><input id="u-name" class="swal2-input" value="${u?.name||''}"></div><div class="input-group"><label>Телефон</label><input id="u-phone" class="swal2-input" placeholder="79991234567" value="${u?.phone||''}" ${!u&&!isSuper?'readonly':''}></div>${isSuper ? `<div class="input-group"><label>Пароль</label><input id="u-pass" class="swal2-input" placeholder="Оставьте пустым" value="${u?.password||''}"></div>` : ''}<div class="input-group"><label>Роль</label><select id="u-role" class="swal2-select"><option value="barista" ${u?.role==='barista'?'selected':''}>Бариста</option>${isSuper ? `<option value="admin" ${u?.role==='admin'?'selected':''}>Администратор</option>` : ''}</select></div>`,
                 showCancelButton:true, confirmButtonText:'Сохранить', cancelButtonText:'Отмена',
                 preConfirm:() => {
                     const name = document.getElementById('u-name').value;
                     if (!name) return Swal.showValidationMessage('Введите имя');
                     const phone = normalizePhone(document.getElementById('u-phone').value);
                     if (!phone) return Swal.showValidationMessage('Введите телефон');
-                    const pass = isSuperAdmin.value ? document.getElementById('u-pass')?.value : (u?.password||'');
+                    const pass = isSuper ? document.getElementById('u-pass')?.value : (u?.password||'');
                     return { name, phone, password:pass, role:document.getElementById('u-role').value, isActive:true };
                 }
             });
-            if (isConfirmed && res) {
+            if (res) {
                 if (u) { const i=usersList.value.findIndex(x=>x.id===u.id); if(i!==-1) usersList.value[i]={...usersList.value[i],...res}; }
                 else usersList.value.push({id:Date.now().toString(),...res});
                 await saveUsers();
@@ -1272,7 +1223,6 @@ createApp({
             }
         }
 
-        // ===== BACKUP =====
         function exportData() {
             const data={stock:stockItems.value,techCards:techCards.value,supplies:supplyHistory.value,sales:saleHistory.value,damage:damageHistory.value,inventory:inventoryReports.value,users:usersList.value};
             const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
@@ -1307,7 +1257,7 @@ createApp({
             activeTab, stockItems, categories, techCards, inventoryReports, supplyHistory, usersList,
             filterCategory, searchStock, filteredStock, filteredSupplies, supplySearch,
             openItemModal, openIncomeModal, openDamageModal,
-            openTechCardModal: saveTechCardModal, calculateCardCost, sellRecipe, openSaleByRecipeModal,
+            openTechCardModal, calculateCardCost, sellRecipe, openSaleByRecipeModal, importExcelSales,
             startInventory, activeInventory, inventoryCounts, completeInventory, cancelInventory, viewInventoryReport,
             addCategory, removeCategory, newCategory,
             damageReasons, newDamageReason, addDamageReason, removeDamageReason,
