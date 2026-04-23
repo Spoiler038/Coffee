@@ -1,13 +1,31 @@
-- name: Generate config.js with token
+name: Deploy PWA
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate config.js with token
         env:
           TOKEN_PWA: ${{ secrets.TOKEN_PWA }}
         run: |
           echo "const GITHUB_TOKEN = '${TOKEN_PWA}';" > config.js
-          echo "--- config.js content (first 30 chars) ---"
-          head -c 30 config.js
-          echo ""
-          echo "--- file exists check ---"
           ls -la config.js
 
-      - name: Verify config.js before deploy
-        run: ls -la config.js && echo "File is ready for deploy"
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          publish_branch: gh-pages
+          exclude_assets: '.github'
