@@ -15,27 +15,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Verify placeholder exists
-        run: |
-          if grep -q '__GITHUB_TOKEN_PLACEHOLDER__' index.html; then
-            echo "✅ Placeholder found — substituting token"
-          else
-            echo "❌ ERROR: __GITHUB_TOKEN_PLACEHOLDER__ not found in index.html"
-            exit 1
-          fi
-
-      - name: Inject GitHub Token
+      - name: Generate config.js with token
+        run: printf "const GITHUB_TOKEN = '%s';\n" "$TOKEN_PWA" > config.js
         env:
           TOKEN_PWA: ${{ secrets.TOKEN_PWA }}
-        run: |
-          sed -i "s|__GITHUB_TOKEN_PLACEHOLDER__|${TOKEN_PWA}|g" index.html
-          # Проверяем, что подстановка прошла успешно (не выводим сам токен!)
-          if grep -q '__GITHUB_TOKEN_PLACEHOLDER__' index.html; then
-            echo "❌ ERROR: Token was NOT injected. Check secret TOKEN_PWA."
-            exit 1
-          else
-            echo "✅ Token injected successfully"
-          fi
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
@@ -43,5 +26,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
           publish_branch: gh-pages
-          # Исключаем папку .github из деплоя — там секреты не нужны
           exclude_assets: '.github'
