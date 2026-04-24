@@ -22,6 +22,6 @@
     "phone": "79778700834",
     "password": "111",
     "role": "admin",
-    "isActive": true
+    "isActive": false
   }
 ]
