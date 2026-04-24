@@ -15,5 +15,13 @@
     "role": "barista",
     "name": "Маргарита",
     "isActive": true
+  },
+  {
+    "id": "1777073258331",
+    "name": "Артур",
+    "phone": "79778700834",
+    "password": "",
+    "role": "admin",
+    "isActive": true
   }
 ]
