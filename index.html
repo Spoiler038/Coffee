@@ -660,6 +660,24 @@ function normalizePhone(phone) {
     return c;
 }
 
+async function hashPassword(password) {
+    const msgBuffer = new TextEncoder().encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Проверяет пароль — поддерживает и старые открытые пароли и новые хэши
+async function checkPassword(inputPassword, storedPassword) {
+    // Если хранимый пароль выглядит как SHA-256 хэш (64 hex символа)
+    if (/^[0-9a-f]{64}$/.test(storedPassword)) {
+        const inputHash = await hashPassword(inputPassword);
+        return inputHash === storedPassword;
+    }
+    // Старый открытый пароль — сравниваем напрямую
+    return inputPassword === storedPassword;
+}
+
 function getDeviceId() {
     let id = localStorage.getItem('tuchka_device_id');
     if (!id) {
@@ -863,18 +881,25 @@ createApp({
 
         async function handleLogin() {
             const normalized = normalizePhone(loginPhone.value);
-            const found = usersList.value.find(u => u.phone === normalized && u.password === loginPass.value && u.isActive !== false);
+            const found = usersList.value.find(u => u.phone === normalized && u.isActive !== false);
             if (!found) { Swal.fire('Ошибка', 'Неверный телефон или пароль', 'error'); return; }
+            const passwordOk = await checkPassword(loginPass.value, found.password);
+            if (!passwordOk) { Swal.fire('Ошибка', 'Неверный телефон или пароль', 'error'); return; }
+            // Если пароль хранится открытым — автоматически хэшируем при входе
+            if (!/^[0-9a-f]{64}$/.test(found.password)) {
+                const idx = usersList.value.findIndex(u => u.id === found.id);
+                usersList.value[idx].password = await hashPassword(loginPass.value);
+                await db.saveFile('users.json', usersList.value, true);
+            }
             // Проверка устройства
             if (found.deviceId && found.deviceId !== getDeviceId()) {
                 Swal.fire('Доступ закрыт', 'Этот аккаунт уже используется на другом устройстве. Обратитесь к администратору.', 'warning');
                 return;
             }
-            // Привязка устройства при первом входе
             if (!found.deviceId) {
                 const idx = usersList.value.findIndex(u => u.id === found.id);
                 usersList.value[idx].deviceId = getDeviceId();
-                await saveUsers();
+                await db.saveFile('users.json', usersList.value, true);
             }
             user.value = { id: found.id, phone: found.phone, role: found.role, name: found.name };
             localStorage.setItem('tuchka_session', JSON.stringify({ id: found.id }));
