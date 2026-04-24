@@ -22,6 +22,7 @@
     "phone": "79778700834",
     "password": "47f62a9f38cda9ed2fb11d44fd74c8cf280c370e633cde36a9e069cde99586f8",
     "role": "admin",
-    "isActive": true
+    "isActive": true,
+    "deviceId": "dev_uz8qbujkbglmodj0m3o"
   }
 ]
