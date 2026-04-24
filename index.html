@@ -683,17 +683,13 @@ class GitHubDB {
     }
     async getFile(filename) {
         try {
-            // API с токеном — работает и для приватных и для публичных репозиториев
-            const r = await fetch(`${this.apiUrl}/${filename}`, { headers: this.headers });
+            // Публичный репозиторий — читаем через raw URL без токена
+            const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/data/${filename}?t=${Date.now()}`;
+            const r = await fetch(url);
             if (r.status === 404) return [];
-            if (r.status === 401) { console.error('GitHub 401: проверьте токен'); return []; }
-            const data = await r.json();
-            if (!data.content) return [];
-            // GitHub возвращает base64 с \n — убираем перед декодированием
-            const clean = data.content.replace(/\n/g, '');
-            const decoded = decodeURIComponent(escape(atob(clean)));
-            if (!decoded.trim()) return [];
-            return JSON.parse(decoded);
+            const text = await r.text();
+            if (!text.trim()) return [];
+            return JSON.parse(text);
         } catch(e) { console.error('getFile', filename, e); return []; }
     }
     async saveFile(filename, data, silent=false) {
