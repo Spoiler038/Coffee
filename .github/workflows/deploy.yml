@@ -19,7 +19,7 @@ jobs:
         env:
           TOKEN_PWA: ${{ secrets.TOKEN_PWA }}
         run: |
-          echo "const GITHUB_TOKEN = '${TOKEN_PWA}';" > config.js
+          printf "const GITHUB_TOKEN = '%s';\n" "$TOKEN_PWA" > config.js
           ls -la config.js
 
       - name: Deploy to GitHub Pages
@@ -29,4 +29,3 @@ jobs:
           publish_dir: ./
           publish_branch: gh-pages
           exclude_assets: '.github'
-          force_orphan: true
