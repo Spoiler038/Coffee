@@ -16,5 +16,13 @@
     "role": "admin",
     "isActive": true,
     "deviceId": "dev_uz8qbujkbglmodj0m3o"
+  },
+  {
+    "id": "1777112255740",
+    "name": "Маргарита",
+    "phone": "79771627484",
+    "password": "",
+    "role": "barista",
+    "isActive": true
   }
 ]
