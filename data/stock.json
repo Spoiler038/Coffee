@@ -3,11 +3,11 @@
     "id": "p1",
     "name": "Кофе Impassion Basic 1 кг",
     "category": "Продукты",
-    "unit": "г",
-    "cost": 1.875,
+    "unit": "кг",
+    "cost": 1875,
     "sellPrice": 2500,
-    "quantity": 10000,
-    "packageSize": 1000
+    "quantity": 10,
+    "packageSize": null
   },
   {
     "id": "p2",
