@@ -173,6 +173,7 @@
             font-size: 13px; cursor: pointer;
             transition: all 0.15s; color: var(--text);
             display: inline-flex; align-items: center; gap: 6px;
+            justify-content: center; gap: 6px;
         }
         .btn:hover { filter: brightness(0.95); }
         .btn-primary { background: var(--primary); color: white; }
@@ -322,6 +323,20 @@
         .tab-btns { display: flex; gap: 6px; margin-bottom: 20px; background: var(--bg); border-radius: 14px; padding: 4px; }
         .tab-btn { flex: 1; padding: 9px; border: none; border-radius: 10px; font-family: inherit; font-weight: 700; font-size: 13px; cursor: pointer; background: transparent; color: var(--text-muted); transition: all 0.2s; }
         .tab-btn.active { background: white; color: var(--primary); box-shadow: 0 1px 6px rgba(0,0,0,0.08); }
+
+        /* Адаптация для телефонов */
+@media (max-width: 550px) {
+    .analytics-toolbar {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+    .analytics-date-group {
+        justify-content: center;
+    }
+    .analytics-buttons-group {
+        justify-content: center;
+    }
+}
     </style>
 </head>
 <body>
@@ -500,21 +515,23 @@
             </div>
 
             <!-- АНАЛИТИКА -->
-            <div v-show="activeTab==='analytics'">
-                <div class="page-header"><span class="page-title">📈 Аналитика</span></div>
-                <div class="card">
-                    <div class="date-row">
-                        <input type="date" v-model="analyticsStartDate" class="input">
-                        <span style="color:var(--text-muted);">—</span>
-                        <input type="date" v-model="analyticsEndDate" class="input">
-                        <button @click="generateAnalytics" class="btn btn-primary btn-sm">Считать</button>
-                    </div>
-                    <div class="period-btns">
-                        <button @click="setAnalyticsPeriod('day')" class="btn btn-sm">День</button>
-                        <button @click="setAnalyticsPeriod('week')" class="btn btn-sm">Неделя</button>
-                        <button @click="setAnalyticsPeriod('month')" class="btn btn-sm">Месяц</button>
-                    </div>
-                </div>
+<div v-show="activeTab==='analytics'">
+    <div class="page-header"><span class="page-title">📈 Аналитика</span></div>
+    <div class="card">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <input type="date" v-model="analyticsStartDate" class="input" style="width: auto;">
+                <span style="color:var(--text-muted);">—</span>
+                <input type="date" v-model="analyticsEndDate" class="input" style="width: auto;">
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <button @click="setAnalyticsPeriod('day')" class="btn btn-sm">День</button>
+                <button @click="setAnalyticsPeriod('week')" class="btn btn-sm">Неделя</button>
+                <button @click="setAnalyticsPeriod('month')" class="btn btn-sm">Месяц</button>
+                <button @click="generateAnalytics" class="btn btn-primary btn-sm">Считать</button>
+            </div>
+        </div>
+    </div>
                 <!-- Импорт файла продаж -->
                 <div class="card" v-if="user.role==='admin'">
                     <div class="card-title">📂 Загрузить продажи из файла</div>
