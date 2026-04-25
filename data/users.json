@@ -14,7 +14,8 @@
     "password": "2ac9a6746aca543af8dff39894cfe8173afba21eb01c6fae33d52947222855ef",
     "role": "barista",
     "name": "Маргарита",
-    "isActive": true
+    "isActive": true,
+    "deviceId": "dev_q9clil53pkmoe6jse5"
   },
   {
     "id": "1777073565774",
