@@ -485,7 +485,10 @@
 
             <!-- ПОСТАВКИ -->
             <div v-show="activeTab==='supplies'">
-                <div class="page-header"><span class="page-title">🚚 Поставки</span></div>
+                <div class="page-header">
+                    <span class="page-title">🚚 Поставки</span>
+                    <button @click="openBulkSupplyModal" class="btn btn-primary btn-sm"><i class="fas fa-boxes"></i> Групповая поставка</button>
+                </div>
                 <div class="card">
                     <div class="filter-bar">
                         <input type="text" v-model="supplySearch" placeholder="Поиск..." class="input">
@@ -1070,6 +1073,176 @@ createApp({
             }
         }
 
+        // ===== ГРУППОВАЯ ПОСТАВКА =====
+        async function openBulkSupplyModal() {
+            const today = new Date().toISOString().slice(0, 10);
+
+            // Состояние строк поставки
+            let rows = [{ itemId: stockItems.value[0]?.id || '', qty: '', cost: '' }];
+
+            const getItemById = (id) => stockItems.value.find(i => i.id === id);
+
+            const getOptionsHtml = (selectedId) =>
+                stockItems.value.map(i =>
+                    `<option value="${i.id}" ${i.id === selectedId ? 'selected' : ''}>${i.name} (${i.unit}${i.packageSize ? ', уп=' + i.packageSize : ''})</option>`
+                ).join('');
+
+            const renderRows = () => {
+                const c = document.getElementById('bulk-rows');
+                if (!c) return;
+                c.innerHTML = rows.map((row, i) => {
+                    const item = getItemById(row.itemId);
+                    const hasPkg = item?.packageSize && item.packageSize > 1;
+                    const unitLabel = hasPkg ? `уп (1уп=${item.packageSize}${item.unit})` : (item?.unit || '');
+                    const costLabel = hasPkg ? 'Цена за уп. ₽' : 'Цена за ед. ₽';
+                    return `
+                    <div class="bulk-row" data-i="${i}" style="display:grid;grid-template-columns:1fr 90px 90px 32px;gap:6px;align-items:center;margin-bottom:8px;">
+                        <select class="b-item swal2-select" data-i="${i}" style="padding:8px;border-radius:10px;border:1.5px solid var(--border);font-family:inherit;font-size:12px;background:var(--bg);">
+                            ${getOptionsHtml(row.itemId)}
+                        </select>
+                        <input class="b-qty swal2-input" data-i="${i}" type="number" step="0.01" placeholder="${unitLabel}" value="${row.qty}" style="margin:0;padding:8px;font-size:12px;" title="Кол-во (${unitLabel})">
+                        <input class="b-cost swal2-input" data-i="${i}" type="number" step="0.01" placeholder="${costLabel}" value="${row.cost}" style="margin:0;padding:8px;font-size:12px;" title="${costLabel}">
+                        <button type="button" class="del-row" data-i="${i}" style="background:var(--danger);color:white;border:none;border-radius:8px;padding:6px 8px;cursor:pointer;font-size:12px;">✕</button>
+                    </div>`;
+                }).join('');
+
+                // Итог
+                let total = 0;
+                rows.forEach(row => {
+                    const item = getItemById(row.itemId);
+                    const hasPkg = item?.packageSize && item.packageSize > 1;
+                    const q = parseFloat(row.qty) || 0;
+                    const c = parseFloat(row.cost) || 0;
+                    total += hasPkg ? q * c : q * c;
+                });
+                const totEl = document.getElementById('bulk-total');
+                if (totEl) totEl.textContent = `Итого: ${Math.round(total * 100) / 100} ₽`;
+
+                // События
+                c.querySelectorAll('.b-item').forEach(sel => {
+                    sel.addEventListener('change', e => {
+                        const i = parseInt(e.target.dataset.i);
+                        rows[i].itemId = e.target.value;
+                        rows[i].cost = '';
+                        rows[i].qty = '';
+                        renderRows();
+                    });
+                });
+                c.querySelectorAll('.b-qty').forEach(inp => {
+                    inp.addEventListener('input', e => { rows[parseInt(e.target.dataset.i)].qty = e.target.value; renderRows(); });
+                });
+                c.querySelectorAll('.b-cost').forEach(inp => {
+                    inp.addEventListener('input', e => { rows[parseInt(e.target.dataset.i)].cost = e.target.value; renderRows(); });
+                });
+                c.querySelectorAll('.del-row').forEach(btn => {
+                    btn.addEventListener('click', e => {
+                        const i = parseInt(e.target.dataset.i);
+                        if (rows.length > 1) { rows.splice(i, 1); renderRows(); }
+                    });
+                });
+            };
+
+            const { isConfirmed } = await Swal.fire({
+                title: '📦 Групповая поставка',
+                width: Math.min(window.innerWidth - 20, 680),
+                html: `
+                    <div style="text-align:left;">
+                        <div class="input-group" style="margin-bottom:12px;">
+                            <label>Дата поставки</label>
+                            <input id="bulk-date" type="date" class="swal2-input" value="${today}" style="margin:0;">
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 90px 90px 32px;gap:6px;margin-bottom:6px;">
+                            <span style="font-size:11px;font-weight:700;color:var(--text-muted);">Товар</span>
+                            <span style="font-size:11px;font-weight:700;color:var(--text-muted);">Кол-во</span>
+                            <span style="font-size:11px;font-weight:700;color:var(--text-muted);">Цена</span>
+                            <span></span>
+                        </div>
+                        <div id="bulk-rows"></div>
+                        <button type="button" id="add-bulk-row" style="width:100%;margin-top:4px;padding:8px;border-radius:10px;border:1.5px dashed var(--border);background:transparent;cursor:pointer;font-family:inherit;font-weight:700;color:var(--primary);font-size:13px;">+ Добавить товар</button>
+                        <div id="bulk-total" style="margin-top:10px;font-weight:800;font-size:15px;text-align:right;color:var(--primary);">Итого: 0 ₽</div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Оформить поставку',
+                cancelButtonText: 'Отмена',
+                didOpen: () => {
+                    renderRows();
+                    document.getElementById('add-bulk-row')?.addEventListener('click', () => {
+                        rows.push({ itemId: stockItems.value[0]?.id || '', qty: '', cost: '' });
+                        renderRows();
+                    });
+                },
+                preConfirm: () => {
+                    const date = document.getElementById('bulk-date')?.value;
+                    if (!date) return Swal.showValidationMessage('Выберите дату');
+                    const valid = [];
+                    for (let i = 0; i < rows.length; i++) {
+                        const item = getItemById(rows[i].itemId);
+                        const q = parseFloat(rows[i].qty);
+                        const c = parseFloat(rows[i].cost);
+                        if (!item) continue;
+                        if (isNaN(q) || q <= 0) return Swal.showValidationMessage(`Строка ${i+1}: введите количество`);
+                        if (isNaN(c) || c <= 0) return Swal.showValidationMessage(`Строка ${i+1}: введите цену`);
+                        valid.push({ item, qty: q, cost: c });
+                    }
+                    if (!valid.length) return Swal.showValidationMessage('Добавьте хотя бы один товар');
+                    return { date, items: valid };
+                }
+            });
+
+            if (!isConfirmed) return;
+
+            // Применяем поставку
+            const result = await Swal.fire({ title: '⏳', text: 'Сохраняем...', didOpen: () => Swal.showLoading(), allowOutsideClick: false });
+
+            // Собираем данные из preConfirm
+            const date = document.getElementById('bulk-date')?.value || today;
+            const supplyDate = new Date(date + 'T12:00:00').toISOString();
+            const newSupplies = [];
+
+            for (const row of rows) {
+                const item = getItemById(row.itemId);
+                if (!item) continue;
+                const q = parseFloat(row.qty);
+                const c = parseFloat(row.cost);
+                if (isNaN(q) || q <= 0 || isNaN(c) || c <= 0) continue;
+
+                const hasPkg = item.packageSize && item.packageSize > 1;
+                const realQty = hasPkg ? q * item.packageSize : q;
+                const costPerUnit = hasPkg ? Math.round(c / item.packageSize * 1000) / 1000 : c;
+
+                const idx = stockItems.value.findIndex(i => i.id === item.id);
+                if (idx !== -1) {
+                    const oldQty = stockItems.value[idx].quantity;
+                    const oldCost = stockItems.value[idx].cost;
+                    const newQty = oldQty + realQty;
+                    stockItems.value[idx].quantity = Math.round(newQty * 1000) / 1000;
+                    stockItems.value[idx].cost = Math.round(((oldCost * oldQty) + (costPerUnit * realQty)) / newQty * 1000) / 1000;
+                    newSupplies.push({
+                        id: Date.now() + '_' + Math.random().toString(36).slice(2),
+                        itemId: item.id, itemName: item.name,
+                        quantity: realQty, unit: item.unit,
+                        costPerUnit, date: supplyDate
+                    });
+                }
+            }
+
+            supplyHistory.value = [...newSupplies, ...supplyHistory.value];
+            syncState.value = 'syncing';
+            await db.saveFile('stock.json', stockItems.value, true);
+            await db.saveFile('supplies.json', supplyHistory.value, true);
+            syncState.value = 'success';
+            setTimeout(() => { if (syncState.value === 'success') syncState.value = 'idle'; }, 2000);
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Поставка оформлена',
+                text: `${newSupplies.length} позиций · ${new Date(supplyDate).toLocaleDateString()}`,
+                timer: 2000, showConfirmButton: false
+            });
+        }
+
+        // ===== СПИСАНИЕ =====
         async function openDamageModal(item) {
             const reasons = damageReasons.value;
             const { value: res } = await Swal.fire({
@@ -1576,7 +1749,7 @@ createApp({
             handleLogin, handleRegister, logout,
             activeTab, stockItems, categories, techCards, inventoryReports, supplyHistory, usersList,
             filterCategory, searchStock, filteredStock, filteredSupplies, supplySearch,
-            openItemModal, openIncomeModal, openDamageModal,
+            openItemModal, openIncomeModal, openDamageModal, openBulkSupplyModal,
             openTechCardModal: saveTechCardModal, calculateCardCost, sellRecipe, openSaleByRecipeModal, deleteTechCard,
             startInventory, activeInventory, inventoryCounts, completeInventory, cancelInventory, viewInventoryReport,
             addCategory, removeCategory, newCategory,
