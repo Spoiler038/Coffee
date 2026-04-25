@@ -15,16 +15,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Generate config.js with split token
-        env:
-          TOKEN_PWA: ${{ secrets.TOKEN_PWA }}
-        run: |
-          PART1="${TOKEN_PWA:0:12}"
-          PART2="${TOKEN_PWA:12:12}"
-          PART3="${TOKEN_PWA:24}"
-          echo "const GITHUB_TOKEN = '${PART1}' + '${PART2}' + '${PART3}';" > config.js
-          ls -la config.js
-
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
@@ -32,3 +22,4 @@ jobs:
           publish_dir: ./
           publish_branch: gh-pages
           exclude_assets: '.github'
+          force_orphan: true
