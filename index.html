@@ -36,6 +36,41 @@
             --nav-h: 68px;
         }
 
+        /* ===== ТЁМНАЯ ТЕМА ===== */
+        body.dark {
+            --primary: #8B7CF6;
+            --primary-dark: #7C6EE6;
+            --primary-light: #2D2B45;
+            --bg: #13111E;
+            --card: #1E1B2E;
+            --text: #F0EEFF;
+            --text-muted: #6B6890;
+            --border: #2D2B45;
+        }
+        body.dark .app-header { background: rgba(30,27,46,0.97); }
+        body.dark .bottom-nav-wrapper { background: rgba(30,27,46,0.97); }
+        body.dark .login-card { background: #1E1B2E; }
+        body.dark .tab-btn.active { background: #2D2B45; }
+        body.dark .sync-status { background: #2D2B45; }
+        body.dark .logout-btn { background: #2D2B45; color: var(--text-muted); }
+        body.dark .logout-btn:hover { background: #3D3B55; }
+        body.dark .input, body.dark select, body.dark textarea { background: #2D2B45; color: var(--text); border-color: #3D3B55; }
+        body.dark .input:focus, body.dark select:focus { background: #3D3B55; border-color: var(--primary); }
+        body.dark .swal2-popup { background: #1E1B2E !important; color: var(--text) !important; }
+        body.dark .swal2-title { color: var(--text) !important; }
+        body.dark .swal2-html-container { color: var(--text) !important; }
+        body.dark .swal2-input, body.dark .swal2-select { background: #2D2B45 !important; color: var(--text) !important; border-color: #3D3B55 !important; }
+
+        /* Кнопка темы */
+        .theme-btn {
+            background: var(--bg); border: none;
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 16px;
+            transition: all 0.3s; flex-shrink: 0;
+        }
+        .theme-btn:hover { transform: rotate(20deg); }
+
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
@@ -343,6 +378,10 @@
                 <i :class="syncStatusIcon"></i>
                 <span>{{ syncStatusText }}</span>
             </div>
+            <button class="theme-btn" @click="changePassword" title="Сменить пароль" style="font-size:14px;">🔑</button>
+            <button class="theme-btn" @click="toggleTheme" :title="isDark ? 'Светлая тема' : 'Тёмная тема'">
+                {{ isDark ? '☀️' : '🌙' }}
+            </button>
             <button class="logout-btn" @click="logout"><i class="fas fa-sign-out-alt"></i></button>
         </div>
     </div>
@@ -358,6 +397,11 @@
         <!-- LOGIN / REGISTER -->
         <div v-if="!user" class="login-wrap">
             <div class="login-card">
+                <div style="position:absolute;top:16px;right:16px;">
+                    <button class="theme-btn" @click="toggleTheme" :title="isDark ? 'Светлая тема' : 'Тёмная тема'">
+                        {{ isDark ? '☀️' : '🌙' }}
+                    </button>
+                </div>
                 <div class="login-logo">☕</div>
                 <div class="login-title">Кофейня Тучка</div>
                 <div class="login-subtitle">Складской учёт</div>
@@ -798,6 +842,18 @@ createApp({
         const regPass = ref('');
         const regPass2 = ref('');
         const activeTab = ref('stock');
+
+        // ===== ТЕМА =====
+        const isDark = ref(localStorage.getItem('tuchka_theme') === 'dark');
+        function applyTheme(dark) {
+            document.body.classList.toggle('dark', dark);
+        }
+        function toggleTheme() {
+            isDark.value = !isDark.value;
+            localStorage.setItem('tuchka_theme', isDark.value ? 'dark' : 'light');
+            applyTheme(isDark.value);
+        }
+        applyTheme(isDark.value);
         const stockItems = ref([]);
         const categories = ref([]);
         const techCards = ref([]);
@@ -909,11 +965,51 @@ createApp({
                 const sess = JSON.parse(saved);
                 const found = usersList.value.find(u => u.id === sess.id && u.isActive !== false);
                 if (!found) { localStorage.removeItem('tuchka_session'); return false; }
-                // Проверка устройства
-                if (found.deviceId && found.deviceId !== getDeviceId()) { localStorage.removeItem('tuchka_session'); return false; }
+                // Суперадмин не проверяет устройство
+                if (found.id !== SUPER_ADMIN_ID) {
+                    if (found.deviceId && found.deviceId !== getDeviceId()) {
+                        localStorage.removeItem('tuchka_session'); return false;
+                    }
+                }
                 user.value = { id: found.id, phone: found.phone, role: found.role, name: found.name };
                 return true;
             } catch { return false; }
+        }
+
+        async function changePassword() {
+            const { value: res, isConfirmed } = await Swal.fire({
+                title: '🔑 Смена пароля',
+                html: `
+                    <div class="input-group"><label>Текущий пароль</label><input id="cp-old" type="password" class="swal2-input" placeholder="Текущий пароль"></div>
+                    <div class="input-group"><label>Новый пароль</label><input id="cp-new" type="password" class="swal2-input" placeholder="Новый пароль"></div>
+                    <div class="input-group"><label>Повторите новый</label><input id="cp-new2" type="password" class="swal2-input" placeholder="Повторите пароль"></div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Сохранить',
+                cancelButtonText: 'Отмена',
+                preConfirm: async () => {
+                    const oldPass = document.getElementById('cp-old').value;
+                    const newPass = document.getElementById('cp-new').value;
+                    const newPass2 = document.getElementById('cp-new2').value;
+                    if (!oldPass) return Swal.showValidationMessage('Введите текущий пароль');
+                    if (!newPass) return Swal.showValidationMessage('Введите новый пароль');
+                    if (newPass.length < 4) return Swal.showValidationMessage('Пароль минимум 4 символа');
+                    if (newPass !== newPass2) return Swal.showValidationMessage('Пароли не совпадают');
+                    const found = usersList.value.find(u => u.id === user.value.id);
+                    if (!found) return Swal.showValidationMessage('Пользователь не найден');
+                    const ok = await checkPassword(oldPass, found.password);
+                    if (!ok) return Swal.showValidationMessage('Неверный текущий пароль');
+                    return { newPass };
+                }
+            });
+            if (isConfirmed && res) {
+                const idx = usersList.value.findIndex(u => u.id === user.value.id);
+                if (idx !== -1) {
+                    usersList.value[idx].password = await hashPassword(res.newPass);
+                    await db.saveFile('users.json', usersList.value, true);
+                    Swal.fire({ icon: 'success', title: 'Пароль изменён', timer: 1500, showConfirmButton: false });
+                }
+            }
         }
 
         async function handleLogin() {
@@ -1737,8 +1833,15 @@ createApp({
         }
 
         onMounted(async () => {
+            applyTheme(isDark.value);
             await refreshAll();
-            if (!tryAutoLogin()) { /* show login */ }
+            // Автовход — если usersList всё ещё пуст (медленная сеть) — повторяем
+            if (!tryAutoLogin() && usersList.value.length === 0) {
+                // Ждём ещё раз и пробуем снова
+                await new Promise(r => setTimeout(r, 2000));
+                await refreshAll();
+                tryAutoLogin();
+            }
             if ('serviceWorker' in navigator) navigator.serviceWorker.register('/Coffee/sw.js').catch(()=>{});
             window.addEventListener('online', ()=>{ offline.value=false; refreshAll(); });
             window.addEventListener('offline', ()=>{ offline.value=true; });
@@ -1756,9 +1859,10 @@ createApp({
             damageReasons, newDamageReason, addDamageReason, removeDamageReason,
             analyticsStartDate, analyticsEndDate, profitReport, salesByCategory, analyticsGenerated,
             generateAnalytics, setAnalyticsPeriod,
-            openUserModal, toggleUserActive, deleteUser, resetDevice, canDeleteUser, isSuperAdmin, superAdminId,
+            openUserModal, toggleUserActive, deleteUser, resetDevice, canDeleteUser, isSuperAdmin, superAdminId, changePassword,
             exportData, importData, importSalesFile, importSalesStatus, offline,
             syncStatusText, syncStatusIcon, syncStatusClass, syncButtonClass, syncButtonIcon, forceSync,
+            isDark, toggleTheme,
             formatNumber
         };
     }
