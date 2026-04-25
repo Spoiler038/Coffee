@@ -21,9 +21,8 @@
     "id": "1777112255740",
     "name": "Маргарита",
     "phone": "79771627484",
-    "password": "111",
-    "role": "barista",
-    "isActive": true,
-    "deviceId": "dev_z4ahrr6s6tmoe6tm91"
+    "password": "",
+    "role": "admin",
+    "isActive": true
   }
 ]
