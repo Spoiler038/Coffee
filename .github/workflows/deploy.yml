@@ -5,6 +5,10 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
+concurrency:
+  group: gh-pages-deploy
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -23,3 +27,4 @@ jobs:
           publish_branch: gh-pages
           exclude_assets: '.github'
           force_orphan: true
+          commit_message: 'deploy: ${{ github.sha }}'
