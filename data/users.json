@@ -1,0 +1,20 @@
+[
+  {
+    "id": "u1",
+    "phone": "79778700833",
+    "password": "c37e48fa1600a5adef3233215839218e0a110767cf5551891bf331e8bea65318",
+    "role": "admin",
+    "name": "Артур",
+    "isActive": true,
+    "deviceId": "dev_ne5wzgjyn4gmobynwcc"
+  },
+  {
+    "id": "1777112255740",
+    "name": "Маргарита",
+    "phone": "79771627484",
+    "password": "111",
+    "role": "admin",
+    "isActive": true,
+    "deviceId": "dev_3g17tlofrpwmoe713m6"
+  }
+]
