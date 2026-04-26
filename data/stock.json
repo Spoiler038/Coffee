@@ -433,5 +433,14 @@
     "cost": 675,
     "quantity": 0,
     "packageSize": null
+  },
+  {
+    "id": "1777213554619_0.1209082688580716",
+    "name": "Сироп Ваниль Монин 1 л",
+    "category": "Добавки",
+    "unit": "л",
+    "cost": 735,
+    "quantity": 0,
+    "packageSize": null
   }
 ]
