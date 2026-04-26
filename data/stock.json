@@ -356,9 +356,9 @@
     "id": "1777208706722_0.6131737584535747",
     "name": "Горячий шоколад",
     "category": "Продукты",
-    "unit": "г",
-    "cost": 1.3,
+    "unit": "кг",
+    "cost": 1300,
     "quantity": 750,
-    "packageSize": 750
+    "packageSize": null
   }
 ]
