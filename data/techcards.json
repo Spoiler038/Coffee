@@ -151,12 +151,12 @@
       {
         "itemId": "p1",
         "itemName": "Кофе Impassion Basic 1 кг",
-        "qty": 0.042,
+        "qty": 0.018,
         "unit": "кг"
       },
       {
         "itemId": "p2",
-        "itemName": "Молоко 3.2%",
+        "itemName": "Молоко 3.2% 1 л",
         "qty": 0.25,
         "unit": "л"
       },
