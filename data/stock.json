@@ -52,7 +52,7 @@
     "category": "Продукты",
     "unit": "л",
     "cost": 100,
-    "quantity": 0,
+    "quantity": 10,
     "packageSize": 0.5
   },
   {
