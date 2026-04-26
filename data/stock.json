@@ -358,7 +358,7 @@
     "category": "Продукты",
     "unit": "кг",
     "cost": 1300,
-    "quantity": 750,
+    "quantity": 0.75,
     "packageSize": null
   }
 ]
