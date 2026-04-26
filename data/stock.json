@@ -359,6 +359,6 @@
     "unit": "кг",
     "cost": 1000,
     "quantity": 0.75,
-    "packageSize": null
+    "packageSize": 0.75
   }
 ]
