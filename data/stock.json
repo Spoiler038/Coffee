@@ -442,5 +442,14 @@
     "cost": 735,
     "quantity": 0,
     "packageSize": null
+  },
+  {
+    "id": "1777213594074_0.13730016391693645",
+    "name": "Сироп Кленовый Монин 1 л",
+    "category": "Добавки",
+    "unit": "л",
+    "cost": 675,
+    "quantity": 0,
+    "packageSize": null
   }
 ]
