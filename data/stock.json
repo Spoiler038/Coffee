@@ -51,9 +51,9 @@
     "name": "Сливки 10% 0,5 л",
     "category": "Продукты",
     "unit": "л",
-    "cost": 120,
+    "cost": 240,
     "quantity": 10,
-    "packageSize": 0.5
+    "packageSize": null
   },
   {
     "id": "1777115323315_0.8943767585949562",
