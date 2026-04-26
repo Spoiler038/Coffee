@@ -360,5 +360,14 @@
     "cost": 1300,
     "quantity": 0.75,
     "packageSize": null
+  },
+  {
+    "id": "1777212681375_0.8473571368629471",
+    "name": "Маршмеллоу",
+    "category": "Продукты",
+    "unit": "г",
+    "cost": 60,
+    "quantity": 2,
+    "packageSize": 70
   }
 ]
