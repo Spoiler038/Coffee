@@ -2,34 +2,9 @@
   {
     "id": "u1",
     "phone": "79778700833",
-    "password": "c37e48fa1600a5adef3233215839218e0a110767cf5551891bf331e8bea65318",
+    "password": "123Qq",
     "role": "admin",
     "name": "Артур",
-    "isActive": true,
-    "deviceId": "dev_ne5wzgjyn4gmobynwcc"
-  },
-  {
-    "id": "1777112255740",
-    "name": "Маргарита",
-    "phone": "79771627484",
-    "password": "f6e0a1e2ac41945a9aa7ff8a8aaa0cebc12a3bcc981a929ad5cf810a090e11ae",
-    "role": "admin",
-    "isActive": true
-  },
-  {
-    "id": "1777301067854",
-    "name": "София",
-    "phone": "79779336016",
-    "password": "",
-    "role": "barista",
-    "isActive": true
-  },
-  {
-    "id": "1777335967220",
-    "name": "Константин",
-    "phone": "79660707073",
-    "password": "",
-    "role": "admin",
     "isActive": true
   }
 ]
