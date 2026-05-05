@@ -811,9 +811,6 @@ const REPO_NAME = 'Coffee';
 const BRANCH = 'main';
 const SUPER_ADMIN_ID = 'u1';
 
-const todayCashEntry = ref(null); // Запись за сегодня
-const isEditingToday = ref(false); // Режим редактирования
-
 function formatNumber(v) {
     if (v === undefined || v === null || isNaN(parseFloat(v))) return '0';
     return Math.round(parseFloat(v) * 100) / 100;
@@ -1000,6 +997,8 @@ createApp({
         const cashLogFilterYear = ref('all');
         const cashLogFilterMonth = ref('all');
         const filteredCashLogEntries = ref([]);
+        const todayCashEntryData = ref(null);  // Запись за сегодня
+        const isEditingToday = ref(false);     // Режим редактирования
         
         const cashLogAvailableYears = computed(() => {
             const years = new Set();
