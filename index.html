@@ -729,49 +729,22 @@
 
         <!-- ========== БАРИСТА: только сегодня и без удаления ========== -->
         <template v-else-if="user.role==='barista'">
-            <!-- Кнопка редактирования сегодняшнего дня -->
-            <div class="card" style="padding:10px 12px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-                    <div>
-                        <div style="font-size:13px;color:var(--text-muted);">Сегодня, {{ new Date().toLocaleDateString('ru') }}</div>
-                        <div style="font-weight:800;font-size:18px;color:var(--success);" v-if="todayCashEntryData">
-                            {{ formatNumber((todayCashEntryData.cash || 0) + (todayCashEntryData.card || 0) + (todayCashEntryData.other || 0)) }} ₽
-                        </div>
-                        <div style="font-weight:800;font-size:18px;color:var(--success);" v-else>0 ₽</div>
-                    </div>
-                    <button @click="editTodayCashEntry" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Внести / Изменить</button>
-                </div>
-            </div>
+    <div class="card" style="padding:20px; text-align:center;">
+        <div style="font-size:48px; margin-bottom:12px;">💰</div>
+        <div style="font-weight:700; margin-bottom:8px;">Выручка за сегодня</div>
+        <div style="font-size:24px; font-weight:800; color:var(--success); margin-bottom:16px;" v-if="todayCashEntryData">
+            {{ formatNumber((todayCashEntryData.cash || 0) + (todayCashEntryData.card || 0) + (todayCashEntryData.other || 0)) }} ₽
+        </div>
+        <div style="font-size:24px; font-weight:800; color:var(--success); margin-bottom:16px;" v-else>
+            0 ₽
+        </div>
+        <button @click="editTodayCashEntry" class="btn btn-primary"><i class="fas fa-edit"></i> Внести / Изменить</button>
+    </div>
 
-            <!-- Текущий месяц (только просмотр) -->
-            <div class="card">
-                <div class="card-title">📋 Выручка за {{ new Date().toLocaleString('ru', { month: 'long', year: 'numeric' }) }}</div>
-                <div v-if="baristaCashLogEntries.length===0" style="text-align:center;color:var(--text-muted);padding:20px;">Нет записей</div>
-                <div v-for="entry in baristaCashLogEntries" :key="entry.id" class="row">
-                    <div class="row-left">
-                        <div class="item-name">
-                            {{ new Date(entry.date).toLocaleDateString('ru') }}
-                            <span style="margin-left: 12px; font-weight: 800; color: var(--success);">
-                                {{ formatNumber((entry.cash || 0) + (entry.card || 0) + (entry.other || 0)) }} ₽
-                            </span>
-                        </div>
-                        <div class="item-meta" v-if="entry.note">{{ entry.note }}</div>
-                    </div>
-                    <div style="text-align:right;font-size:13px;flex-shrink:0;">
-                        <div style="color:var(--success);"><i class="fas fa-coins"></i> {{ formatNumber(entry.cash) }} ₽</div>
-                        <div style="color:var(--primary);"><i class="fas fa-credit-card"></i> {{ formatNumber(entry.card) }} ₽</div>
-                        <div v-if="entry.other" style="color:var(--text-muted);">+ {{ formatNumber(entry.other) }} ₽</div>
-                    </div>
-                </div>
-                <div style="margin-top:12px; font-size:12px; color:var(--text-muted); text-align:center; padding-top:8px; border-top:1px solid var(--border);">
-                    <i class="fas fa-info-circle"></i> Бариста может редактировать только <strong>записи за сегодня</strong>
-                </div>
-            </div>
-
-            <div class="card" style="text-align:center;">
-                <button @click="lockCashLog" class="btn"><i class="fas fa-lock"></i> Заблокировать</button>
-            </div>
-        </template>
+    <div class="card" style="text-align:center;">
+        <button @click="lockCashLog" class="btn"><i class="fas fa-lock"></i> Заблокировать</button>
+    </div>
+</template>
 
     </div>
 </div>
