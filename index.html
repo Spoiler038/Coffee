@@ -784,7 +784,7 @@
             <button class="nav-item" :class="{active:activeTab==='inventory'}" @click="activeTab='inventory'"><i class="fas fa-clipboard-list"></i><span>Инвент</span></button>
             <button class="nav-item" :class="{active:activeTab==='supplies'}" @click="activeTab='supplies'"><i class="fas fa-history"></i><span>Поставки</span></button>
             <button class="nav-item" :class="{active:activeTab==='analytics'}" @click="activeTab='analytics'"><i class="fas fa-chart-line"></i><span>Аналитика</span></button>
-            <button v-if="user.role==='admin'" class="nav-item" :class="{active:activeTab==='cashlog'}" @click="activeTab='cashlog'"><i class="fas fa-wallet"></i><span>Выручка</span></button>
+            <button v-if="user.role==='admin' || user.role==='barista'" class="nav-item" :class="{active:activeTab==='cashlog'}" @click="activeTab='cashlog'"><i class="fas fa-wallet"></i><span>Выручка</span></button>
             <button v-if="user.role==='admin'" class="nav-item" :class="{active:activeTab==='settings'}" @click="activeTab='settings'"><i class="fas fa-cog"></i><span>Админ</span></button>
         </div>
     </div>
