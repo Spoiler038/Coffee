@@ -651,78 +651,130 @@
             </div>
 
             <!-- ЖУРНАЛ ВЫРУЧКИ -->
-            <div v-show="activeTab==='cashlog' && user.role==='admin'">
-                <div class="page-header">
-                    <span class="page-title">💵 Выручка</span>
+<div v-show="activeTab==='cashlog' && (user.role==='admin' || user.role==='barista')">
+    <div class="page-header">
+        <span class="page-title">💵 Выручка</span>
+    </div>
+
+    <!-- ОБЩИЙ БЛОК РАЗБЛОКИРОВКИ -->
+    <div class="card" v-if="!cashLogUnlocked">
+        <div style="text-align:center;padding:20px;">
+            <div style="font-size:32px;margin-bottom:12px;">🔒</div>
+            <div style="font-weight:700;margin-bottom:16px;">Данные зашифрованы</div>
+            <input type="password" v-model="cashLogPin" placeholder="Пин-код" class="input" style="max-width:200px;text-align:center;margin:0 auto 12px;display:block;" @keyup.enter="unlockCashLog">
+            <button @click="unlockCashLog" class="btn btn-primary" style="margin-top:8px;">Разблокировать</button>
+            <div v-if="cashLogError" style="color:var(--danger);font-size:12px;margin-top:8px;">{{ cashLogError }}</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:12px;">Первый вход — установите пин-код</div>
+        </div>
+    </div>
+
+    <div v-if="cashLogUnlocked">
+
+        <!-- ========== АДМИНИСТРАТОР: полный доступ ========== -->
+        <template v-if="user.role==='admin'">
+            <div class="card" style="padding:10px 12px;">
+                <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
+                    <select v-model="cashLogFilterYear" @change="applyCashLogFilter" class="badge" style="width:auto;">
+                        <option value="all">Все годы</option>
+                        <option v-for="y in cashLogAvailableYears" :value="y">{{ y }}</option>
+                    </select>
+                    <select v-model="cashLogFilterMonth" @change="applyCashLogFilter" class="badge" style="width:auto;" :disabled="cashLogFilterYear === 'all'">
+                        <option value="all">Все месяцы</option>
+                        <option value="0">Янв</option><option value="1">Фев</option><option value="2">Мар</option><option value="3">Апр</option>
+                        <option value="4">Май</option><option value="5">Июн</option><option value="6">Июл</option><option value="7">Авг</option>
+                        <option value="8">Сен</option><option value="9">Окт</option><option value="10">Ноя</option><option value="11">Дек</option>
+                    </select>
+                    <button @click="resetCashLogFilter" class="btn btn-sm">Сбросить</button>
+                    <button @click="openCashLogModal" class="btn btn-primary btn-sm" style="margin-left:auto;"><i class="fas fa-plus"></i></button>
                 </div>
-                <div class="card" v-if="!cashLogUnlocked">
-                    <div style="text-align:center;padding:20px;">
-                        <div style="font-size:32px;margin-bottom:12px;">🔒</div>
-                        <div style="font-weight:700;margin-bottom:16px;">Данные зашифрованы</div>
-                        <input type="password" v-model="cashLogPin" placeholder="Пин-код" class="input" style="max-width:200px;text-align:center;margin:0 auto 12px;display:block;" @keyup.enter="unlockCashLog">
-                        <button @click="unlockCashLog" class="btn btn-primary" style="margin-top:8px;">Разблокировать</button>
-                        <div v-if="cashLogError" style="color:var(--danger);font-size:12px;margin-top:8px;">{{ cashLogError }}</div>
-                        <div style="font-size:11px;color:var(--text-muted);margin-top:12px;">Первый вход — установите пин-код</div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                    <div style="flex:1;min-width:80px;text-align:center;background:var(--primary-light);padding:10px 8px;border-radius:12px;">
+                        <div style="font-size:10px;color:var(--text-muted);font-weight:700;"><i class="fas fa-coins" style="margin-right:3px;"></i> НАЛ</div>
+                        <div style="font-weight:800;font-size:15px;color:var(--success);">{{ formatNumber(cashLogFilteredTotal('cash')) }} ₽</div>
                     </div>
-                </div>
-                <div v-if="cashLogUnlocked">
-                    <div class="card" style="padding:10px 12px;">
-                        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
-                            <select v-model="cashLogFilterYear" @change="applyCashLogFilter" class="badge" style="width:auto;">
-                                <option value="all">Все годы</option>
-                                <option v-for="y in cashLogAvailableYears" :value="y">{{ y }}</option>
-                            </select>
-                            <select v-model="cashLogFilterMonth" @change="applyCashLogFilter" class="badge" style="width:auto;" :disabled="cashLogFilterYear === 'all'">
-                                <option value="all">Все месяцы</option>
-                                <option value="0">Янв</option><option value="1">Фев</option><option value="2">Мар</option><option value="3">Апр</option>
-                                <option value="4">Май</option><option value="5">Июн</option><option value="6">Июл</option><option value="7">Авг</option>
-                                <option value="8">Сен</option><option value="9">Окт</option><option value="10">Ноя</option><option value="11">Дек</option>
-                            </select>
-                            <button @click="resetCashLogFilter" class="btn btn-sm">Сбросить</button>
-                            <button @click="openCashLogModal" class="btn btn-primary btn-sm" style="margin-left:auto;"><i class="fas fa-plus"></i></button>
-                        </div>
-                        <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                            <div style="flex:1;min-width:80px;text-align:center;background:var(--primary-light);padding:10px 8px;border-radius:12px;">
-                                <div style="font-size:10px;color:var(--text-muted);font-weight:700;"><i class="fas fa-coins" style="margin-right:3px;"></i> НАЛ</div>
-                                <div style="font-weight:800;font-size:15px;color:var(--success);">{{ formatNumber(cashLogFilteredTotal('cash')) }} ₽</div>
-                            </div>
-                            <div style="flex:1;min-width:80px;text-align:center;background:var(--primary-light);padding:10px 8px;border-radius:12px;">
-                                <div style="font-size:10px;color:var(--text-muted);font-weight:700;"><i class="fas fa-credit-card" style="margin-right:3px;"></i> БЕЗНАЛ</div>
-                                <div style="font-weight:800;font-size:15px;color:var(--primary);">{{ formatNumber(cashLogFilteredTotal('card')) }} ₽</div>
-                            </div>
-                            <div style="flex:1;min-width:80px;text-align:center;background:var(--primary-light);padding:10px 8px;border-radius:12px;">
-                                <div style="font-size:10px;color:var(--text-muted);font-weight:700;">∑ ИТОГО</div>
-                                <div style="font-weight:800;font-size:15px;">{{ formatNumber(cashLogFilteredTotal('cash') + cashLogFilteredTotal('card') + cashLogFilteredTotal('other')) }} ₽</div>
-                            </div>
-                        </div>
+                    <div style="flex:1;min-width:80px;text-align:center;background:var(--primary-light);padding:10px 8px;border-radius:12px;">
+                        <div style="font-size:10px;color:var(--text-muted);font-weight:700;"><i class="fas fa-credit-card" style="margin-right:3px;"></i> БЕЗНАЛ</div>
+                        <div style="font-weight:800;font-size:15px;color:var(--primary);">{{ formatNumber(cashLogFilteredTotal('card')) }} ₽</div>
                     </div>
-                    <div class="card">
-                        <div v-if="filteredCashLogEntries.length===0" style="text-align:center;color:var(--text-muted);padding:20px;font-size:13px;">Нет записей</div>
-                        <div v-for="entry in filteredCashLogEntries" :key="entry.id" class="row">
-                            <div class="row-left">
-                                <div class="item-name">
-                                    {{ new Date(entry.date).toLocaleDateString('ru') }}
-                                    <span style="margin-left: 12px; font-weight: 800; color: var(--success);">
-                                        {{ formatNumber((entry.cash || 0) + (entry.card || 0) + (entry.other || 0)) }} ₽
-                                    </span>
-                                </div>
-                                <div class="item-meta" v-if="entry.note">{{ entry.note }}</div>
-                            </div>
-                            <div style="text-align:right;font-size:13px;flex-shrink:0;">
-                                <div style="color:var(--success);"><i class="fas fa-coins"></i> {{ formatNumber(entry.cash) }} ₽</div>
-<div style="color:var(--primary);"><i class="fas fa-credit-card"></i> {{ formatNumber(entry.card) }} ₽</div>
-                                <div v-if="entry.other" style="color:var(--text-muted);">+ {{ formatNumber(entry.other) }} ₽</div>
-                            </div>
-                            <button @click="deleteCashEntry(entry)" class="btn btn-danger btn-sm btn-icon"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                    <div class="card" style="text-align:center;">
-                        <button @click="lockCashLog" class="btn"><i class="fas fa-lock"></i> Заблокировать</button>
+                    <div style="flex:1;min-width:80px;text-align:center;background:var(--primary-light);padding:10px 8px;border-radius:12px;">
+                        <div style="font-size:10px;color:var(--text-muted);font-weight:700;">∑ ИТОГО</div>
+                        <div style="font-weight:800;font-size:15px;">{{ formatNumber(cashLogFilteredTotal('cash') + cashLogFilteredTotal('card') + cashLogFilteredTotal('other')) }} ₽</div>
                     </div>
                 </div>
             </div>
-        </div>
+            <div class="card">
+                <div v-if="filteredCashLogEntries.length===0" style="text-align:center;color:var(--text-muted);padding:20px;font-size:13px;">Нет записей</div>
+                <div v-for="entry in filteredCashLogEntries" :key="entry.id" class="row">
+                    <div class="row-left">
+                        <div class="item-name">
+                            {{ new Date(entry.date).toLocaleDateString('ru') }}
+                            <span style="margin-left: 12px; font-weight: 800; color: var(--success);">
+                                {{ formatNumber((entry.cash || 0) + (entry.card || 0) + (entry.other || 0)) }} ₽
+                            </span>
+                        </div>
+                        <div class="item-meta" v-if="entry.note">{{ entry.note }}</div>
+                    </div>
+                    <div style="text-align:right;font-size:13px;flex-shrink:0;">
+                        <div style="color:var(--success);"><i class="fas fa-coins"></i> {{ formatNumber(entry.cash) }} ₽</div>
+                        <div style="color:var(--primary);"><i class="fas fa-credit-card"></i> {{ formatNumber(entry.card) }} ₽</div>
+                        <div v-if="entry.other" style="color:var(--text-muted);">+ {{ formatNumber(entry.other) }} ₽</div>
+                    </div>
+                    <button @click="deleteCashEntry(entry)" class="btn btn-danger btn-sm btn-icon"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+            <div class="card" style="text-align:center;">
+                <button @click="lockCashLog" class="btn"><i class="fas fa-lock"></i> Заблокировать</button>
+            </div>
+        </template>
+
+        <!-- ========== БАРИСТА: только сегодня и без удаления ========== -->
+        <template v-else-if="user.role==='barista'">
+            <!-- Кнопка редактирования сегодняшнего дня -->
+            <div class="card" style="padding:10px 12px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                    <div>
+                        <div style="font-size:13px;color:var(--text-muted);">Сегодня, {{ new Date().toLocaleDateString('ru') }}</div>
+                        <div style="font-weight:800;font-size:18px;color:var(--success);" v-if="todayCashEntryData">
+                            {{ formatNumber((todayCashEntryData.cash || 0) + (todayCashEntryData.card || 0) + (todayCashEntryData.other || 0)) }} ₽
+                        </div>
+                        <div style="font-weight:800;font-size:18px;color:var(--success);" v-else>0 ₽</div>
+                    </div>
+                    <button @click="editTodayCashEntry" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Внести / Изменить</button>
+                </div>
+            </div>
+
+            <!-- Текущий месяц (только просмотр) -->
+            <div class="card">
+                <div class="card-title">📋 Выручка за {{ new Date().toLocaleString('ru', { month: 'long', year: 'numeric' }) }}</div>
+                <div v-if="baristaCashLogEntries.length===0" style="text-align:center;color:var(--text-muted);padding:20px;">Нет записей</div>
+                <div v-for="entry in baristaCashLogEntries" :key="entry.id" class="row">
+                    <div class="row-left">
+                        <div class="item-name">
+                            {{ new Date(entry.date).toLocaleDateString('ru') }}
+                            <span style="margin-left: 12px; font-weight: 800; color: var(--success);">
+                                {{ formatNumber((entry.cash || 0) + (entry.card || 0) + (entry.other || 0)) }} ₽
+                            </span>
+                        </div>
+                        <div class="item-meta" v-if="entry.note">{{ entry.note }}</div>
+                    </div>
+                    <div style="text-align:right;font-size:13px;flex-shrink:0;">
+                        <div style="color:var(--success);"><i class="fas fa-coins"></i> {{ formatNumber(entry.cash) }} ₽</div>
+                        <div style="color:var(--primary);"><i class="fas fa-credit-card"></i> {{ formatNumber(entry.card) }} ₽</div>
+                        <div v-if="entry.other" style="color:var(--text-muted);">+ {{ formatNumber(entry.other) }} ₽</div>
+                    </div>
+                </div>
+                <div style="margin-top:12px; font-size:12px; color:var(--text-muted); text-align:center; padding-top:8px; border-top:1px solid var(--border);">
+                    <i class="fas fa-info-circle"></i> Бариста может редактировать только <strong>записи за сегодня</strong>
+                </div>
+            </div>
+
+            <div class="card" style="text-align:center;">
+                <button @click="lockCashLog" class="btn"><i class="fas fa-lock"></i> Заблокировать</button>
+            </div>
+        </template>
+
     </div>
+</div>
 
     <!-- BOTTOM NAV -->
     <div class="bottom-nav-wrapper" v-if="user">
@@ -758,6 +810,9 @@ const REPO_OWNER = 'spoiler038';
 const REPO_NAME = 'Coffee';
 const BRANCH = 'main';
 const SUPER_ADMIN_ID = 'u1';
+
+const todayCashEntry = ref(null); // Запись за сегодня
+const isEditingToday = ref(false); // Режим редактирования
 
 function formatNumber(v) {
     if (v === undefined || v === null || isNaN(parseFloat(v))) return '0';
@@ -981,6 +1036,89 @@ createApp({
             cashLogFilterMonth.value = 'all';
             applyCashLogFilter();
         }
+
+        // Функция для баристы — получить или создать запись за сегодня
+async function getOrCreateTodayCashEntry() {
+    const today = new Date().toISOString().slice(0, 10);
+    let entry = cashLogEntries.value.find(e => e.date === today);
+    
+    if (!entry) {
+        entry = {
+            id: Date.now(),
+            date: today,
+            cash: 0,
+            card: 0,
+            other: 0,
+            note: ''
+        };
+        cashLogEntries.value.unshift(entry);
+        await saveCashLog();
+    }
+    todayCashEntryData.value = entry;
+    return entry;
+}
+
+// Функция для баристы — сохранить/обновить запись за сегодня
+async function saveTodayCashEntry(entry) {
+    const idx = cashLogEntries.value.findIndex(e => e.id === entry.id);
+    if (idx !== -1) {
+        cashLogEntries.value[idx] = entry;
+    } else {
+        cashLogEntries.value.unshift(entry);
+    }
+    await saveCashLog();
+    todayCashEntryData.value = entry;
+    isEditingToday.value = false;
+}
+
+// Функция для баристы — редактировать запись за сегодня
+async function editTodayCashEntry() {
+    const entry = await getOrCreateTodayCashEntry();
+    
+    const { value: res, isConfirmed } = await Swal.fire({
+        title: '📝 Выручка за сегодня',
+        html: `
+            <div class="grid-2">
+                <div class="input-group"><label>🪙 Наличные ₽</label><input id="edit-cash" type="number" step="1" class="swal2-input" value="${entry.cash}"></div>
+                <div class="input-group"><label>💳 Безналичные ₽</label><input id="edit-card" type="number" step="1" class="swal2-input" value="${entry.card}"></div>
+            </div>
+            <div class="input-group"><label>💰 Прочее ₽ (нефискальные)</label><input id="edit-other" type="number" step="1" class="swal2-input" value="${entry.other}"></div>
+            <div class="input-group"><label>📝 Примечание</label><input id="edit-note" class="swal2-input" value="${entry.note || ''}"></div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Сохранить',
+        cancelButtonText: 'Отмена',
+        didOpen: () => {
+            // Добавляем класс для красивого отображения на телефоне
+            document.querySelector('.swal2-popup').style.width = '95%';
+        },
+        preConfirm: () => {
+            const cash = parseFloat(document.getElementById('edit-cash').value) || 0;
+            const card = parseFloat(document.getElementById('edit-card').value) || 0;
+            const other = parseFloat(document.getElementById('edit-other').value) || 0;
+            const note = document.getElementById('edit-note').value;
+            return { ...entry, cash, card, other, note };
+        }
+    });
+    
+    if (isConfirmed && res) {
+        await saveTodayCashEntry(res);
+        Swal.fire({ icon: 'success', title: 'Сохранено!', timer: 1500, showConfirmButton: false });
+        // Обновляем отображение
+        await getOrCreateTodayCashEntry();
+    }
+}
+
+// Ограниченный доступ к просмотру (бариста видит только текущий месяц)
+const baristaCashLogEntries = computed(() => {
+    if (user.value?.role === 'admin') return [];
+    
+    const now = new Date();
+    return cashLogEntries.value.filter(entry => {
+        const d = new Date(entry.date);
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    }).sort((a,b) => new Date(b.date) - new Date(a.date));
+});
         
         async function deriveCashKey(pin) {
             const enc = new TextEncoder();
@@ -1458,7 +1596,13 @@ createApp({
             unlockCashLog, lockCashLog, openCashLogModal, deleteCashEntry, applyCashLogFilter,
             syncStatusText, syncStatusIcon, syncStatusClass, syncButtonClass, syncButtonIcon, forceSync,
             isDark, toggleTheme,
-            formatNumber, formatStockQty
+            formatNumber, formatStockQty,
+            todayCashEntryData,
+            isEditingToday,
+            getOrCreateTodayCashEntry,
+            saveTodayCashEntry,
+            editTodayCashEntry,
+            baristaCashLogEntries
         };
     }
 }).mount('#app');
