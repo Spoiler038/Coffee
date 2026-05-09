@@ -1078,7 +1078,7 @@ async function editTodayCashEntry() {
         await getOrCreateTodayCashEntry();
     }
 }
-
+        
 // Ограниченный доступ к просмотру (бариста видит только текущий месяц)
 const baristaCashLogEntries = computed(() => {
     if (user.value?.role === 'admin') return [];
@@ -1261,6 +1261,20 @@ const baristaCashLogEntries = computed(() => {
         localStorage.removeItem('tuchka_session');
         return false; 
     }
+}
+        // Проверка сессии при загрузке (для случая, когда tryAutoLogin не сработал)
+function restoreSession() {
+    const saved = localStorage.getItem('tuchka_session');
+    if (!saved) return false;
+    try {
+        const sess = JSON.parse(saved);
+        const found = usersList.value.find(u => u.id === sess.id && u.isActive !== false);
+        if (found) {
+            user.value = { id: found.id, phone: found.phone, role: found.role, name: found.name };
+            return true;
+        }
+    } catch(e) {}
+    return false;
 }
         
         async function changePassword() {
@@ -1547,20 +1561,18 @@ const baristaCashLogEntries = computed(() => {
     applyTheme(isDark.value);
     await refreshAll();
     
-    // Восстановление сессии из localStorage
-    const savedSession = localStorage.getItem('tuchka_session');
-    if (savedSession && !user.value && usersList.value.length > 0) {
-        try {
-            const sess = JSON.parse(savedSession);
-            const found = usersList.value.find(u => u.id === sess.id && u.isActive !== false);
-            if (found && (found.id === SUPER_ADMIN_ID || !found.deviceId || found.deviceId === getDeviceId())) {
-                user.value = { id: found.id, phone: found.phone, role: found.role, name: found.name };
-                activeTab.value = 'stock';
-            }
-        } catch(e) {}
+    // Сначала пробуем восстановить сессию
+    if (!user.value && restoreSession()) {
+        activeTab.value = 'stock';
     }
     
-    if (!tryAutoLogin() && usersList.value.length === 0) { 
+    // Если не получилось — пробуем стандартный автовход
+    if (!user.value && tryAutoLogin()) {
+        activeTab.value = 'stock';
+    }
+    
+    // Если пользователь всё ещё не вошёл и список пуст — ждём и пробуем ещё раз
+    if (!user.value && usersList.value.length === 0) { 
         await new Promise(r => setTimeout(r, 2000)); 
         await refreshAll(); 
         tryAutoLogin(); 
