@@ -1051,17 +1051,16 @@ async function editTodayCashEntry() {
         title: '📝 Выручка за сегодня',
         html: `
             <div class="grid-2">
-                <div class="input-group"><label>🪙 Наличные ₽</label><input id="edit-cash" type="number" step="1" class="swal2-input" value="${entry.cash}"></div>
-                <div class="input-group"><label>💳 Безналичные ₽</label><input id="edit-card" type="number" step="1" class="swal2-input" value="${entry.card}"></div>
+                <div class="input-group"><label>🪙 Наличные ₽</label><input id="edit-cash" type="number" step="1" class="swal2-input" placeholder="0" value="${entry.cash !== 0 ? entry.cash : ''}"></div>
+                <div class="input-group"><label>💳 Безналичные ₽</label><input id="edit-card" type="number" step="1" class="swal2-input" placeholder="0" value="${entry.card !== 0 ? entry.card : ''}"></div>
             </div>
-            <div class="input-group"><label>💰 Прочее ₽ (нефискальные)</label><input id="edit-other" type="number" step="1" class="swal2-input" value="${entry.other}"></div>
-            <div class="input-group"><label>📝 Примечание</label><input id="edit-note" class="swal2-input" value="${entry.note || ''}"></div>
+            <div class="input-group"><label>💰 Прочее ₽ (нефискальные)</label><input id="edit-other" type="number" step="1" class="swal2-input" placeholder="0" value="${entry.other !== 0 ? entry.other : ''}"></div>
+            <div class="input-group"><label>📝 Примечание</label><input id="edit-note" class="swal2-input" value="${(entry.note || '').replace(/"/g, '&quot;')}"></div>
         `,
         showCancelButton: true,
         confirmButtonText: 'Сохранить',
         cancelButtonText: 'Отмена',
         didOpen: () => {
-            // Добавляем класс для красивого отображения на телефоне
             document.querySelector('.swal2-popup').style.width = '95%';
         },
         preConfirm: () => {
@@ -1076,7 +1075,6 @@ async function editTodayCashEntry() {
     if (isConfirmed && res) {
         await saveTodayCashEntry(res);
         Swal.fire({ icon: 'success', title: 'Сохранено!', timer: 1500, showConfirmButton: false });
-        // Обновляем отображение
         await getOrCreateTodayCashEntry();
     }
 }
@@ -1152,23 +1150,34 @@ const baristaCashLogEntries = computed(() => {
         }
         function lockCashLog() { cashLogUnlocked.value = false; cashLogKey = null; cashLogPin.value = ''; cashLogEntries.value = []; }
         async function openCashLogModal() {
-            const today = new Date().toISOString().slice(0, 10);
-            const { value: res, isConfirmed } = await Swal.fire({
-                title: '💵 Запись выручки',
-                html: `<div class="input-group"><label>Дата</label><input id="cl-date" type="date" class="swal2-input" value="${today}"></div>
-                    <div class="grid-2"><div class="input-group"><label>🪙 Наличные ₽</label><input id="cl-cash" type="number" step="1" class="swal2-input" placeholder="0" value="0"></div>
-                    <div class="input-group"><label>💳 Безналичные ₽</label><input id="cl-card" type="number" step="1" class="swal2-input" placeholder="0" value="0"></div></div>
-                    <div class="input-group"><label>Прочее ₽ (нефискальные)</label><input id="cl-other" type="number" step="1" class="swal2-input" placeholder="0" value="0"></div>
-                    <div class="input-group"><label>Примечание</label><input id="cl-note" class="swal2-input" placeholder="Необязательно"></div>`,
-                showCancelButton: true, confirmButtonText: 'Сохранить', cancelButtonText: 'Отмена',
-                preConfirm: () => {
-                    const date = document.getElementById('cl-date').value;
-                    if (!date) return Swal.showValidationMessage('Выберите дату');
-                    return { id: Date.now(), date, cash: parseFloat(document.getElementById('cl-cash').value) || 0, card: parseFloat(document.getElementById('cl-card').value) || 0, other: parseFloat(document.getElementById('cl-other').value) || 0, note: document.getElementById('cl-note').value };
-                }
-            });
-            if (isConfirmed && res) { cashLogEntries.value.unshift(res); await saveCashLog(); Swal.fire({ icon: 'success', title: 'Записано', timer: 1200, showConfirmButton: false }); }
+    const today = new Date().toISOString().slice(0, 10);
+    const { value: res, isConfirmed } = await Swal.fire({
+        title: '💵 Запись выручки',
+        html: `<div class="input-group"><label>Дата</label><input id="cl-date" type="date" class="swal2-input" value="${today}"></div>
+            <div class="grid-2"><div class="input-group"><label>🪙 Наличные ₽</label><input id="cl-cash" type="number" step="1" class="swal2-input" placeholder="0"></div>
+            <div class="input-group"><label>💳 Безналичные ₽</label><input id="cl-card" type="number" step="1" class="swal2-input" placeholder="0"></div></div>
+            <div class="input-group"><label>💰 Прочее ₽ (нефискальные)</label><input id="cl-other" type="number" step="1" class="swal2-input" placeholder="0"></div>
+            <div class="input-group"><label>📝 Примечание</label><input id="cl-note" class="swal2-input" placeholder="Необязательно"></div>`,
+        showCancelButton: true, confirmButtonText: 'Сохранить', cancelButtonText: 'Отмена',
+        preConfirm: () => {
+            const date = document.getElementById('cl-date').value;
+            if (!date) return Swal.showValidationMessage('Выберите дату');
+            return { 
+                id: Date.now(), 
+                date, 
+                cash: parseFloat(document.getElementById('cl-cash').value) || 0, 
+                card: parseFloat(document.getElementById('cl-card').value) || 0, 
+                other: parseFloat(document.getElementById('cl-other').value) || 0, 
+                note: document.getElementById('cl-note').value 
+            };
         }
+    });
+    if (isConfirmed && res) { 
+        cashLogEntries.value.unshift(res); 
+        await saveCashLog(); 
+        Swal.fire({ icon: 'success', title: 'Записано', timer: 1200, showConfirmButton: false }); 
+    }
+}
         async function deleteCashEntry(entry) {
             const { isConfirmed } = await Swal.fire({ title: 'Удалить запись?', text: new Date(entry.date).toLocaleDateString('ru'), showCancelButton: true, confirmButtonColor: '#E17055' });
             if (isConfirmed) { cashLogEntries.value = cashLogEntries.value.filter(e => e.id !== entry.id); await saveCashLog(); }
@@ -1535,13 +1544,32 @@ const baristaCashLogEntries = computed(() => {
         async function importData(e) { const file=e.target.files[0]; if(!file) return; const text=await file.text(); const data=JSON.parse(text); if(data.stock) stockItems.value=data.stock; if(data.techCards) techCards.value=data.techCards; if(data.supplies) supplyHistory.value=data.supplies; if(data.sales) saleHistory.value=data.sales; if(data.damage) damageHistory.value=data.damage; if(data.inventory) inventoryReports.value=data.inventory; if(data.users) usersList.value=data.users; await forceSync(); Swal.fire({icon:'success',title:'Импорт завершён',timer:1500,showConfirmButton:false}); }
         
         onMounted(async () => {
-            applyTheme(isDark.value);
-            await refreshAll();
-            if (!tryAutoLogin() && usersList.value.length === 0) { await new Promise(r => setTimeout(r, 2000)); await refreshAll(); tryAutoLogin(); }
-            if ('serviceWorker' in navigator) navigator.serviceWorker.register('/Coffee/sw.js').catch(()=>{});
-            window.addEventListener('online', ()=>{ offline.value=false; refreshAll(); });
-            window.addEventListener('offline', ()=>{ offline.value=true; });
-        });
+    applyTheme(isDark.value);
+    await refreshAll();
+    
+    // Восстановление сессии из localStorage
+    const savedSession = localStorage.getItem('tuchka_session');
+    if (savedSession && !user.value && usersList.value.length > 0) {
+        try {
+            const sess = JSON.parse(savedSession);
+            const found = usersList.value.find(u => u.id === sess.id && u.isActive !== false);
+            if (found && (found.id === SUPER_ADMIN_ID || !found.deviceId || found.deviceId === getDeviceId())) {
+                user.value = { id: found.id, phone: found.phone, role: found.role, name: found.name };
+                activeTab.value = 'stock';
+            }
+        } catch(e) {}
+    }
+    
+    if (!tryAutoLogin() && usersList.value.length === 0) { 
+        await new Promise(r => setTimeout(r, 2000)); 
+        await refreshAll(); 
+        tryAutoLogin(); 
+    }
+    
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('/Coffee/sw.js').catch(()=>{});
+    window.addEventListener('online', ()=>{ offline.value=false; refreshAll(); });
+    window.addEventListener('offline', ()=>{ offline.value=true; });
+});
         
         return {
             user, loginPhone, loginPass, authMode, regPhone, regPass, regPass2,
