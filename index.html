@@ -1010,35 +1010,22 @@ createApp({
         }
 
        // Функция для баристы — получить или создать запись за сегодня (только за сегодня)
-async function getOrCreateTodayCashEntry() {
-    // Используем локальную дату, игнорируя часовой пояс
+// Обновить отображение сегодняшней выручки (без создания новой записи)
+async function refreshTodayCashEntry() {
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
     const today = `${year}-${month}-${day}`;
     
-    // Ищем запись ТОЛЬКО за сегодня
-    let entry = cashLogEntries.value.find(e => e.date === today);
-    
-    if (!entry) {
-        // Если нет записи за сегодня — создаём новую с нулями
-        entry = {
-            id: Date.now(),
-            date: today,
-            cash: 0,
-            card: 0,
-            other: 0,
-            note: ''
-        };
-        cashLogEntries.value.unshift(entry);
-        await saveCashLog();
+    const entry = cashLogEntries.value.find(e => e.date === today);
+    if (entry) {
+        todayCashEntryData.value = entry;
+    } else {
+        todayCashEntryData.value = { cash: 0, card: 0, other: 0, date: today };
     }
-    todayCashEntryData.value = entry;
-    return entry;
 }
-
-        // Обновить отображение сегодняшней выручки
+        // Обновить отображение сегодняшней выручки (без создания новой записи)
 async function refreshTodayCashEntry() {
     const now = new Date();
     const year = now.getFullYear();
@@ -1069,8 +1056,10 @@ async function saveTodayCashEntry(entry) {
 
 // Функция для баристы — редактировать запись за сегодня
 async function editTodayCashEntry() {
+    // Получаем запись за сегодня (создаём если нет)
     const entry = await getOrCreateTodayCashEntry();
     
+    // Показываем модальное окно с пустыми полями (если запись с нулями)
     const { value: res, isConfirmed } = await Swal.fire({
         title: '📝 Выручка за сегодня',
         html: `
@@ -1096,10 +1085,11 @@ async function editTodayCashEntry() {
         }
     });
     
-   if (isConfirmed && res) {
-    await saveTodayCashEntry(res);      // 1. Сохраняем данные в БД
-    Swal.fire({ icon: 'success', title: 'Сохранено!', timer: 1500, showConfirmButton: false });
-    await refreshTodayCashEntry();       // 2. Обновляем отображение из БД
+    if (isConfirmed && res) {
+        await saveTodayCashEntry(res);
+        Swal.fire({ icon: 'success', title: 'Сохранено!', timer: 1500, showConfirmButton: false });
+        // Обновляем отображение
+        await refreshTodayCashEntry();
     }
 }
         
