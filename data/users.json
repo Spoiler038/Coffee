@@ -23,5 +23,13 @@
     "role": "barista",
     "isActive": true,
     "deviceId": "dev_45ztq7o0oe2mou44s03"
+  },
+  {
+    "id": "1778366543248",
+    "name": "Тест бариста",
+    "phone": "79991234567",
+    "password": "",
+    "role": "barista",
+    "isActive": true
   }
 ]
