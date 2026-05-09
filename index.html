@@ -1009,12 +1009,20 @@ createApp({
             applyCashLogFilter();
         }
 
-        // Функция для баристы — получить или создать запись за сегодня
+       // Функция для баристы — получить или создать запись за сегодня (только за сегодня)
 async function getOrCreateTodayCashEntry() {
-    const today = new Date().toISOString().slice(0, 10);
+    // Используем локальную дату, игнорируя часовой пояс
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const today = `${year}-${month}-${day}`;
+    
+    // Ищем запись ТОЛЬКО за сегодня
     let entry = cashLogEntries.value.find(e => e.date === today);
     
     if (!entry) {
+        // Если нет записи за сегодня — создаём новую с нулями
         entry = {
             id: Date.now(),
             date: today,
@@ -1028,6 +1036,22 @@ async function getOrCreateTodayCashEntry() {
     }
     todayCashEntryData.value = entry;
     return entry;
+}
+
+        // Обновить отображение сегодняшней выручки
+async function refreshTodayCashEntry() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const today = `${year}-${month}-${day}`;
+    
+    const entry = cashLogEntries.value.find(e => e.date === today);
+    if (entry) {
+        todayCashEntryData.value = entry;
+    } else {
+        todayCashEntryData.value = { cash: 0, card: 0, other: 0, date: today };
+    }
 }
 
 // Функция для баристы — сохранить/обновить запись за сегодня
@@ -1072,10 +1096,10 @@ async function editTodayCashEntry() {
         }
     });
     
-    if (isConfirmed && res) {
-        await saveTodayCashEntry(res);
-        Swal.fire({ icon: 'success', title: 'Сохранено!', timer: 1500, showConfirmButton: false });
-        await getOrCreateTodayCashEntry();
+   if (isConfirmed && res) {
+    await saveTodayCashEntry(res);      // 1. Сохраняем данные в БД
+    Swal.fire({ icon: 'success', title: 'Сохранено!', timer: 1500, showConfirmButton: false });
+    await refreshTodayCashEntry();       // 2. Обновляем отображение из БД
     }
 }
         
@@ -1135,6 +1159,7 @@ const baristaCashLogEntries = computed(() => {
                         cashLogFilterYear.value = now.getFullYear().toString();
                         cashLogFilterMonth.value = 'all';
                         applyCashLogFilter();
+                        await refreshTodayCashEntry();
                     } catch { cashLogError.value = 'Неверный пин-код'; }
                 } else {
                     cashLogKey = key;
