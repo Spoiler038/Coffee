@@ -1,0 +1,1214 @@
+[
+  {
+    "id": "1778860637403_12",
+    "recipeId": null,
+    "recipeName": "Лимонад манго-маракуйя",
+    "quantity": 3,
+    "totalCost": 0,
+    "revenue": 900,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637403_13",
+    "recipeId": null,
+    "recipeName": "Лимонад мохито",
+    "quantity": 7,
+    "totalCost": 0,
+    "revenue": 2100,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637403_14",
+    "recipeId": null,
+    "recipeName": "Лимонад цитрусовый",
+    "quantity": 2,
+    "totalCost": 0,
+    "revenue": 600,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637403_18",
+    "recipeId": null,
+    "recipeName": "Круассан с ростбифом",
+    "quantity": 20,
+    "totalCost": 0,
+    "revenue": 8000,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637403_19",
+    "recipeId": null,
+    "recipeName": "Круассан с шоколадом",
+    "quantity": 17,
+    "totalCost": 0,
+    "revenue": 2550,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637403_20",
+    "recipeId": null,
+    "recipeName": "Круассан с малиной",
+    "quantity": 8,
+    "totalCost": 0,
+    "revenue": 1200,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637403_21",
+    "recipeId": null,
+    "recipeName": "Круассан с ветчиной и гаудой",
+    "quantity": 24,
+    "totalCost": 0,
+    "revenue": 9600,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637404_22",
+    "recipeId": null,
+    "recipeName": "Круассан с лососем",
+    "quantity": 22,
+    "totalCost": 0,
+    "revenue": 12100,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637404_23",
+    "recipeId": null,
+    "recipeName": "Круассан французский классический",
+    "quantity": 16,
+    "totalCost": 0,
+    "revenue": 3200,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637404_24",
+    "recipeId": null,
+    "recipeName": "Круассан с индейкой и соусом цезарь",
+    "quantity": 1,
+    "totalCost": 0,
+    "revenue": 400,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637404_28",
+    "recipeId": null,
+    "recipeName": "Пирожное эклер с фисташкой",
+    "quantity": 10,
+    "totalCost": 0,
+    "revenue": 2100,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637404_29",
+    "recipeId": null,
+    "recipeName": "Пирожное корзинка с лимоном и меренгой",
+    "quantity": 11,
+    "totalCost": 0,
+    "revenue": 2310,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637404_30",
+    "recipeId": null,
+    "recipeName": "Шоколадное печенье с M&M's",
+    "quantity": 19,
+    "totalCost": 0,
+    "revenue": 1520,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637404_31",
+    "recipeId": null,
+    "recipeName": "Пирожное эклер с шоколадом",
+    "quantity": 43,
+    "totalCost": 0,
+    "revenue": 9030,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637404_32",
+    "recipeId": null,
+    "recipeName": "Пирожное эклер с орехом",
+    "quantity": 16,
+    "totalCost": 0,
+    "revenue": 3360,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637404_33",
+    "recipeId": null,
+    "recipeName": "Орешки со сгущеным молоком",
+    "quantity": 8,
+    "totalCost": 0,
+    "revenue": 480,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637404_34",
+    "recipeId": null,
+    "recipeName": "Пирожное \"Картошка\"",
+    "quantity": 21,
+    "totalCost": 0,
+    "revenue": 4410,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637404_35",
+    "recipeId": null,
+    "recipeName": "Пирожное эклер с ванилью",
+    "quantity": 45,
+    "totalCost": 0,
+    "revenue": 9450,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637404_36",
+    "recipeId": null,
+    "recipeName": "Пирожное корзинка с голубикой",
+    "quantity": 16,
+    "totalCost": 0,
+    "revenue": 3360,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637404_37",
+    "recipeId": null,
+    "recipeName": "Пирожное корзинка с малиной",
+    "quantity": 20,
+    "totalCost": 0,
+    "revenue": 4200,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637404_50",
+    "recipeId": "1777078319232_tc",
+    "recipeName": "шот эспрессо",
+    "quantity": 7,
+    "totalCost": 170.625,
+    "revenue": 490,
+    "ingredients": [
+      {
+        "itemId": "p1",
+        "itemName": "Кофе Impassion Basic 1 кг",
+        "qty": 0.013,
+        "unit": "кг"
+      }
+    ],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637404_51",
+    "recipeId": null,
+    "recipeName": "маршмеллоу",
+    "quantity": 4,
+    "totalCost": 0,
+    "revenue": 160,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637404_52",
+    "recipeId": null,
+    "recipeName": "альтернативное молоко",
+    "quantity": 16,
+    "totalCost": 0,
+    "revenue": 1280,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637404_53",
+    "recipeId": null,
+    "recipeName": "сироп",
+    "quantity": 89,
+    "totalCost": 0,
+    "revenue": 3560,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637404_57",
+    "recipeId": "1777160604395_tc",
+    "recipeName": "Американо 350 мл",
+    "quantity": 8,
+    "totalCost": 331.20000000000005,
+    "revenue": 1520,
+    "ingredients": [
+      {
+        "itemId": "p1",
+        "itemName": "Кофе Impassion Basic 1 кг",
+        "qty": 0.016,
+        "unit": "кг"
+      },
+      {
+        "itemId": "1777113378168_0.8508601939996743",
+        "itemName": "Стакан 350 мл 35 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      },
+      {
+        "itemId": "1777072642413_0.6876116310485119",
+        "itemName": "Крышка 90 мм 50 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      }
+    ],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637404_58",
+    "recipeId": "1777208585044_tc",
+    "recipeName": "Мокко 350 мл",
+    "quantity": 4,
+    "totalCost": 405.1,
+    "revenue": 1000,
+    "ingredients": [
+      {
+        "itemId": "p1",
+        "itemName": "Кофе Impassion Basic 1 кг",
+        "qty": 0.013,
+        "unit": "кг"
+      },
+      {
+        "itemId": "p2",
+        "itemName": "Молоко 3.2% 1 л",
+        "qty": 0.15,
+        "unit": "л"
+      },
+      {
+        "itemId": "1777113378168_0.8508601939996743",
+        "itemName": "Стакан тиффани 350 мл 35 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      },
+      {
+        "itemId": "1777072642413_0.6876116310485119",
+        "itemName": "Крышка 90 мм 50 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      },
+      {
+        "itemId": "1777208706722_0.6131737584535747",
+        "itemName": "Горячий шоколад",
+        "qty": 0.04,
+        "unit": "кг"
+      }
+    ],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637404_59",
+    "recipeId": "1777162051557_tc",
+    "recipeName": "Синяя матча латте 350 мл",
+    "quantity": 5,
+    "totalCost": 319.5,
+    "revenue": 1150,
+    "ingredients": [
+      {
+        "itemId": "p1",
+        "itemName": "Кофе Impassion Basic 1 кг",
+        "qty": 0.016,
+        "unit": "кг"
+      },
+      {
+        "itemId": "p2",
+        "itemName": "Молоко 3.2%",
+        "qty": 0.25,
+        "unit": "л"
+      },
+      {
+        "itemId": "1777113378168_0.8508601939996743",
+        "itemName": "Стакан тиффани 350 мл 35 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      },
+      {
+        "itemId": "1777072642413_0.6876116310485119",
+        "itemName": "Крышка 90 мм 50 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      }
+    ],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637404_60",
+    "recipeId": "1777161089003_tc",
+    "recipeName": "Капучино 350 мл",
+    "quantity": 72,
+    "totalCost": 4546.8,
+    "revenue": 15840,
+    "ingredients": [
+      {
+        "itemId": "p1",
+        "itemName": "Кофе Impassion Basic 1 кг",
+        "qty": 0.018,
+        "unit": "кг"
+      },
+      {
+        "itemId": "p2",
+        "itemName": "Молоко 3.2% 1 л",
+        "qty": 0.2,
+        "unit": "л"
+      },
+      {
+        "itemId": "1777113378168_0.8508601939996743",
+        "itemName": "Стакан тиффани 350 мл 35 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      },
+      {
+        "itemId": "1777072642413_0.6876116310485119",
+        "itemName": "Крышка 90 мм 50 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      }
+    ],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637405_61",
+    "recipeId": "1777162051557_tc",
+    "recipeName": "Красная матча латте 350 мл",
+    "quantity": 3,
+    "totalCost": 191.70000000000002,
+    "revenue": 690,
+    "ingredients": [
+      {
+        "itemId": "p1",
+        "itemName": "Кофе Impassion Basic 1 кг",
+        "qty": 0.016,
+        "unit": "кг"
+      },
+      {
+        "itemId": "p2",
+        "itemName": "Молоко 3.2%",
+        "qty": 0.25,
+        "unit": "л"
+      },
+      {
+        "itemId": "1777113378168_0.8508601939996743",
+        "itemName": "Стакан тиффани 350 мл 35 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      },
+      {
+        "itemId": "1777072642413_0.6876116310485119",
+        "itemName": "Крышка 90 мм 50 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      }
+    ],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637405_62",
+    "recipeId": null,
+    "recipeName": "Чай зеленый 350 мл",
+    "quantity": 1,
+    "totalCost": 0,
+    "revenue": 200,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637405_63",
+    "recipeId": null,
+    "recipeName": "Горячий шоколад 250 мл",
+    "quantity": 8,
+    "totalCost": 0,
+    "revenue": 1600,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637405_64",
+    "recipeId": "1777161221636_tc",
+    "recipeName": "Капучино 450 мл",
+    "quantity": 45,
+    "totalCost": 4677.75,
+    "revenue": 11250,
+    "ingredients": [
+      {
+        "itemId": "p1",
+        "itemName": "Кофе Impassion Basic 1 кг",
+        "qty": 0.042,
+        "unit": "кг"
+      },
+      {
+        "itemId": "p2",
+        "itemName": "Молоко 3.2%",
+        "qty": 0.25,
+        "unit": "л"
+      },
+      {
+        "itemId": "1777120813913_0.9627726729734353",
+        "itemName": "Стакан Тиффани 450 мл 35 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      },
+      {
+        "itemId": "1777072642413_0.6876116310485119",
+        "itemName": "Крышка 90 мм 50 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      }
+    ],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637405_65",
+    "recipeId": null,
+    "recipeName": "Какао 350 мл",
+    "quantity": 8,
+    "totalCost": 0,
+    "revenue": 1600,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637405_66",
+    "recipeId": null,
+    "recipeName": "Сок морковный (300 мл)",
+    "quantity": 3,
+    "totalCost": 0,
+    "revenue": 1050,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637405_67",
+    "recipeId": null,
+    "recipeName": "Вода (500 мл)",
+    "quantity": 11,
+    "totalCost": 0,
+    "revenue": 1100,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637405_68",
+    "recipeId": "1777162051557_tc",
+    "recipeName": "Матча латте 350 мл",
+    "quantity": 4,
+    "totalCost": 255.60000000000002,
+    "revenue": 800,
+    "ingredients": [
+      {
+        "itemId": "p1",
+        "itemName": "Кофе Impassion Basic 1 кг",
+        "qty": 0.016,
+        "unit": "кг"
+      },
+      {
+        "itemId": "p2",
+        "itemName": "Молоко 3.2%",
+        "qty": 0.25,
+        "unit": "л"
+      },
+      {
+        "itemId": "1777113378168_0.8508601939996743",
+        "itemName": "Стакан тиффани 350 мл 35 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      },
+      {
+        "itemId": "1777072642413_0.6876116310485119",
+        "itemName": "Крышка 90 мм 50 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      }
+    ],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637405_69",
+    "recipeId": null,
+    "recipeName": "Бамбл 450 мл",
+    "quantity": 10,
+    "totalCost": 0,
+    "revenue": 3100,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637405_70",
+    "recipeId": null,
+    "recipeName": "Какао 450 мл",
+    "quantity": 8,
+    "totalCost": 0,
+    "revenue": 1840,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637405_71",
+    "recipeId": null,
+    "recipeName": "Чай черный 450 мл",
+    "quantity": 1,
+    "totalCost": 0,
+    "revenue": 230,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637405_72",
+    "recipeId": "1777160659355_tc",
+    "recipeName": "Американо 450 мл",
+    "quantity": 4,
+    "totalCost": 303.3,
+    "revenue": 880,
+    "ingredients": [
+      {
+        "itemId": "p1",
+        "itemName": "Кофе Impassion Basic 1 кг",
+        "qty": 0.039,
+        "unit": "кг"
+      },
+      {
+        "itemId": "1777120813913_0.9627726729734353",
+        "itemName": "Стакан Тиффани 450 мл 35 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      },
+      {
+        "itemId": "1777072642413_0.6876116310485119",
+        "itemName": "Крышка 90 мм 50 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      }
+    ],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637405_73",
+    "recipeId": "1777162412276_tc",
+    "recipeName": "Синяя матча латте 450 мл",
+    "quantity": 3,
+    "totalCost": 321.975,
+    "revenue": 780,
+    "ingredients": [
+      {
+        "itemId": "p1",
+        "itemName": "Кофе Impassion Basic 1 кг",
+        "qty": 0.039,
+        "unit": "кг"
+      },
+      {
+        "itemId": "p2",
+        "itemName": "Молоко 3.2%",
+        "qty": 0.35,
+        "unit": "л"
+      },
+      {
+        "itemId": "1777120813913_0.9627726729734353",
+        "itemName": "Стакан Тиффани 450 мл 35 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      },
+      {
+        "itemId": "1777072642413_0.6876116310485119",
+        "itemName": "Крышка 90 мм 50 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      }
+    ],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637405_74",
+    "recipeId": null,
+    "recipeName": "Сок (200 мл)",
+    "quantity": 8,
+    "totalCost": 0,
+    "revenue": 1600,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637405_75",
+    "recipeId": "1777162866693_tc",
+    "recipeName": "Раф 350 мл",
+    "quantity": 16,
+    "totalCost": 1708.4,
+    "revenue": 4480,
+    "ingredients": [
+      {
+        "itemId": "p1",
+        "itemName": "Кофе Impassion Basic 1 кг",
+        "qty": 0.013,
+        "unit": "кг"
+      },
+      {
+        "itemId": "1777113507617_0.2226108045142684",
+        "itemName": "Сливки 10% 0,5 л",
+        "qty": 0.25,
+        "unit": "л"
+      },
+      {
+        "itemId": "1777113378168_0.8508601939996743",
+        "itemName": "Стакан тиффани 350 мл 35 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      },
+      {
+        "itemId": "1777072642413_0.6876116310485119",
+        "itemName": "Крышка 90 мм 50 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      },
+      {
+        "itemId": "1777163729341_0.8148462811653505",
+        "itemName": "Сахар ванильный 8 г",
+        "qty": 1,
+        "unit": "г"
+      }
+    ],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637405_76",
+    "recipeId": null,
+    "recipeName": "Сок грейпфрутовый (300 мл)",
+    "quantity": 2,
+    "totalCost": 0,
+    "revenue": 700,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637405_77",
+    "recipeId": "1777162051557_tc",
+    "recipeName": "Латте 350 мл",
+    "quantity": 42,
+    "totalCost": 2683.8,
+    "revenue": 9240,
+    "ingredients": [
+      {
+        "itemId": "p1",
+        "itemName": "Кофе Impassion Basic 1 кг",
+        "qty": 0.016,
+        "unit": "кг"
+      },
+      {
+        "itemId": "p2",
+        "itemName": "Молоко 3.2%",
+        "qty": 0.25,
+        "unit": "л"
+      },
+      {
+        "itemId": "1777113378168_0.8508601939996743",
+        "itemName": "Стакан тиффани 350 мл 35 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      },
+      {
+        "itemId": "1777072642413_0.6876116310485119",
+        "itemName": "Крышка 90 мм 50 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      }
+    ],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637405_78",
+    "recipeId": "1777160388779_tc",
+    "recipeName": "Американо 250 мл",
+    "quantity": 13,
+    "totalCost": 436.475,
+    "revenue": 2080,
+    "ingredients": [
+      {
+        "itemId": "p1",
+        "itemName": "Кофе Impassion Basic 1 кг",
+        "qty": 0.013,
+        "unit": "кг"
+      },
+      {
+        "itemId": "p3",
+        "itemName": "Стакан Тиффани 250 мл 40 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      },
+      {
+        "itemId": "1777124874046_0.9643579813261863",
+        "itemName": "Крышка 80 мм 50 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      }
+    ],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637405_79",
+    "recipeId": null,
+    "recipeName": "Чай травяной 450 мл",
+    "quantity": 5,
+    "totalCost": 0,
+    "revenue": 1150,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637406_89",
+    "recipeId": null,
+    "recipeName": "Чай с бергамотом 350 мл",
+    "quantity": 6,
+    "totalCost": 0,
+    "revenue": 1200,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637406_90",
+    "recipeId": null,
+    "recipeName": "Бамбл 350 мл",
+    "quantity": 4,
+    "totalCost": 0,
+    "revenue": 1120,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637406_91",
+    "recipeId": "1777078319232_tc",
+    "recipeName": "Эспрессо-тоник 450 мл",
+    "quantity": 1,
+    "totalCost": 24.375,
+    "revenue": 310,
+    "ingredients": [
+      {
+        "itemId": "p1",
+        "itemName": "Кофе Impassion Basic 1 кг",
+        "qty": 0.013,
+        "unit": "кг"
+      }
+    ],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637406_92",
+    "recipeId": null,
+    "recipeName": "Чай травяной 350 мл",
+    "quantity": 4,
+    "totalCost": 0,
+    "revenue": 800,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637406_93",
+    "recipeId": null,
+    "recipeName": "Чай молочный улун 350 мл",
+    "quantity": 3,
+    "totalCost": 0,
+    "revenue": 600,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637406_94",
+    "recipeId": null,
+    "recipeName": "Чай фруктовый 350 мл",
+    "quantity": 3,
+    "totalCost": 0,
+    "revenue": 600,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637406_95",
+    "recipeId": "1777163440126_tc",
+    "recipeName": "Раф 450 мл",
+    "quantity": 3,
+    "totalCost": 322.35,
+    "revenue": 930,
+    "ingredients": [
+      {
+        "itemId": "p1",
+        "itemName": "Кофе Impassion Basic 1 кг",
+        "qty": 0.018,
+        "unit": "кг"
+      },
+      {
+        "itemId": "1777113507617_0.2226108045142684",
+        "itemName": "Сливки 10% 0,5 л",
+        "qty": 0.25,
+        "unit": "л"
+      },
+      {
+        "itemId": "1777120813913_0.9627726729734353",
+        "itemName": "Стакан Тиффани 450 мл 35 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      },
+      {
+        "itemId": "1777072642413_0.6876116310485119",
+        "itemName": "Крышка 90 мм 50 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      },
+      {
+        "itemId": "1777163729341_0.8148462811653505",
+        "itemName": "Сахар ванильный 8 г",
+        "qty": 1,
+        "unit": "шт"
+      }
+    ],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637406_96",
+    "recipeId": "1777162412276_tc",
+    "recipeName": "Айс латте 450 мл",
+    "quantity": 13,
+    "totalCost": 1395.2250000000001,
+    "revenue": 3250,
+    "ingredients": [
+      {
+        "itemId": "p1",
+        "itemName": "Кофе Impassion Basic 1 кг",
+        "qty": 0.039,
+        "unit": "кг"
+      },
+      {
+        "itemId": "p2",
+        "itemName": "Молоко 3.2%",
+        "qty": 0.35,
+        "unit": "л"
+      },
+      {
+        "itemId": "1777120813913_0.9627726729734353",
+        "itemName": "Стакан Тиффани 450 мл 35 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      },
+      {
+        "itemId": "1777072642413_0.6876116310485119",
+        "itemName": "Крышка 90 мм 50 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      }
+    ],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637406_97",
+    "recipeId": "1777160747234_tc",
+    "recipeName": "Капучино 250 мл",
+    "quantity": 33,
+    "totalCost": 1474.2749999999999,
+    "revenue": 6270,
+    "ingredients": [
+      {
+        "itemId": "p1",
+        "itemName": "Кофе Impassion Basic 1 кг",
+        "qty": 0.013,
+        "unit": "кг"
+      },
+      {
+        "itemId": "p2",
+        "itemName": "Молоко 3.2%",
+        "qty": 0.15,
+        "unit": "л"
+      },
+      {
+        "itemId": "p3",
+        "itemName": "Стакан 250 мл 40 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      }
+    ],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637406_98",
+    "recipeId": null,
+    "recipeName": "Горячий шоколад 350 мл",
+    "quantity": 17,
+    "totalCost": 0,
+    "revenue": 3910,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637406_99",
+    "recipeId": null,
+    "recipeName": "Чай с бергамотом 450 мл",
+    "quantity": 6,
+    "totalCost": 0,
+    "revenue": 1380,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637406_100",
+    "recipeId": "1777162051557_tc",
+    "recipeName": "Айс латте 350 мл",
+    "quantity": 9,
+    "totalCost": 575.1,
+    "revenue": 1980,
+    "ingredients": [
+      {
+        "itemId": "p1",
+        "itemName": "Кофе Impassion Basic 1 кг",
+        "qty": 0.016,
+        "unit": "кг"
+      },
+      {
+        "itemId": "p2",
+        "itemName": "Молоко 3.2%",
+        "qty": 0.25,
+        "unit": "л"
+      },
+      {
+        "itemId": "1777113378168_0.8508601939996743",
+        "itemName": "Стакан тиффани 350 мл 35 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      },
+      {
+        "itemId": "1777072642413_0.6876116310485119",
+        "itemName": "Крышка 90 мм 50 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      }
+    ],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637406_101",
+    "recipeId": "1777212493266_tc",
+    "recipeName": "Флэт Уайт 250 мл",
+    "quantity": 13,
+    "totalCost": 614.25,
+    "revenue": 2860,
+    "ingredients": [
+      {
+        "itemId": "p1",
+        "itemName": "Кофе Impassion Basic 1 кг",
+        "qty": 0.018,
+        "unit": "кг"
+      },
+      {
+        "itemId": "p2",
+        "itemName": "Молоко 3.2% 1 л",
+        "qty": 0.15,
+        "unit": "л"
+      }
+    ],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637406_102",
+    "recipeId": null,
+    "recipeName": "Сок апельсиновый (300 мл)",
+    "quantity": 6,
+    "totalCost": 0,
+    "revenue": 2100,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637406_103",
+    "recipeId": null,
+    "recipeName": "Какао 250 мл",
+    "quantity": 5,
+    "totalCost": 0,
+    "revenue": 850,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637406_104",
+    "recipeId": null,
+    "recipeName": "Чай черный 350 мл",
+    "quantity": 5,
+    "totalCost": 0,
+    "revenue": 1000,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637406_105",
+    "recipeId": null,
+    "recipeName": "Сок яблочный (300 мл)",
+    "quantity": 2,
+    "totalCost": 0,
+    "revenue": 700,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637406_106",
+    "recipeId": "1777162412276_tc",
+    "recipeName": "Латте 450 мл",
+    "quantity": 19,
+    "totalCost": 2039.175,
+    "revenue": 4750,
+    "ingredients": [
+      {
+        "itemId": "p1",
+        "itemName": "Кофе Impassion Basic 1 кг",
+        "qty": 0.039,
+        "unit": "кг"
+      },
+      {
+        "itemId": "p2",
+        "itemName": "Молоко 3.2%",
+        "qty": 0.35,
+        "unit": "л"
+      },
+      {
+        "itemId": "1777120813913_0.9627726729734353",
+        "itemName": "Стакан Тиффани 450 мл 35 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      },
+      {
+        "itemId": "1777072642413_0.6876116310485119",
+        "itemName": "Крышка 90 мм 50 шт/уп",
+        "qty": 1,
+        "unit": "шт"
+      }
+    ],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637406_110",
+    "recipeId": null,
+    "recipeName": "Макарон",
+    "quantity": 52,
+    "totalCost": 0,
+    "revenue": 4160,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": "1778860637406_111",
+    "recipeId": null,
+    "recipeName": "Безе в стакане в ассортименте",
+    "quantity": 21,
+    "totalCost": 0,
+    "revenue": 3990,
+    "ingredients": [],
+    "source": "import",
+    "date": "2026-04-15T12:00:00.000Z"
+  },
+  {
+    "id": 1777078964080,
+    "recipeId": "1777078319232_tc",
+    "recipeName": "Эспрессо",
+    "quantity": 3,
+    "totalCost": 83.88,
+    "revenue": 480,
+    "ingredients": [
+      {
+        "itemId": "p1",
+        "itemName": "Зерновой кофе",
+        "qty": 0.016,
+        "unit": "кг"
+      },
+      {
+        "itemId": "p3",
+        "itemName": "Стакан Тиффани 250 мл",
+        "qty": 1,
+        "unit": "шт"
+      },
+      {
+        "itemId": "1777072642413_0.6876116310485119",
+        "itemName": "Крышка 90 мм",
+        "qty": 1,
+        "unit": "шт"
+      }
+    ],
+    "date": "2026-04-25T01:02:44.080Z"
+  }
+]
